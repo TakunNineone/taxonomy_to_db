@@ -43,7 +43,7 @@ class c_parseToDf():
         self.df_preconditions_Dic=[]
         self.df_messages_Dic=[]
         self.df_linkbases_Dic=[]
-        self.df_tables = pd.DataFrame(columns=['version', 'rinok', 'entity', 'targetnamespace', 'schemalocation', 'namespace'])
+        self.df_tables_Dic = []
 
     def parseLinkbase(self,soup,path):
         temp_list=[]
@@ -589,7 +589,7 @@ class c_parseToDf():
         #print(f'Labels - {full_file_path}')
         temp_list=[]
         columns=['version','rinok', 'entity', 'parentrole', 'type', 'label', 'role', 'title',
-                                               'lang', 'id', 'text']
+                                               'lang', 'id', 'text','full_path']
         if dict_with_lbls:
             for xx in dict_with_lbls:
                 temp_list.append([
@@ -601,7 +601,8 @@ class c_parseToDf():
                     xx['xlink:title'] if 'xlink:title' in xx.attrs.keys() else None,
                     xx['xml:lang'] if 'xml:lang' in xx.attrs.keys() else None,
                     xx['id'] if 'id' in xx.attrs.keys() else None,
-                    xx.text
+                    xx.text,
+                    full_file_path
                 ])
         df_labels=pd.DataFrame(data=temp_list,columns=columns)
         self.appendDfs_Dic(self.df_labels_Dic, df_labels)

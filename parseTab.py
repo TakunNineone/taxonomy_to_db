@@ -1,5 +1,7 @@
 import gc, datetime
 import os,re
+
+import pandas as pd
 from bs4 import BeautifulSoup
 import warnings
 import parseToDf
@@ -24,6 +26,8 @@ class c_parseTab():
             self.df=parseToDf.c_parseToDf(taxonomy,rinok)
 
     def parsesupport(self):
+        temp_list=[]
+        columns = ['version', 'rinok', 'entity', 'targetnamespace', 'schemalocation', 'namespace']
         path_supp=self.path_folder+'\\ep\\'
         if os.path.isdir(path_supp):
             for xx in os.listdir(path_supp):
@@ -37,14 +41,16 @@ class c_parseTab():
             namesps=soup.find_all(re.compile('.*import$'))
             for xx in namesps:
                 if 'www.cbr.ru' in xx['namespace'] and f'{self.period}/tab' in xx['namespace']:
-                    self.df.df_tables.loc[-1] = [self.version,self.rinok, os.path.basename(path_file),
-                                              soup['targetnamespace'],xx['schemalocation'],xx['namespace']]
-                    self.df.df_tables.index = self.df.df_tables.index + 1
-                    self.df.df_tables = self.df.df_tables.sort_index()
+                    temp_list.append([self.version, self.rinok, os.path.basename(path_file),
+                                       soup['targetnamespace'], xx['schemalocation'], xx['namespace']])
+            self.tables=pd.DataFrame(data=temp_list,columns=columns)
+            self.df.df_tables_Dic.append(self.tables)
         else:
             None
 
     def parsenosupport(self):
+        temp_list=[]
+        columns = ['version', 'rinok', 'entity', 'targetnamespace', 'schemalocation', 'namespace']
         path_supp = self.path_folder + '\\ep\\'
         if os.path.isdir(path_supp):
             for ep in os.listdir(path_supp):
@@ -57,16 +63,16 @@ class c_parseTab():
                     namesps = soup.find_all(re.compile('.*import$'))
                     for xx in namesps:
                         if 'www.cbr.ru' in xx['namespace'] and f'{self.period}/tab' in xx['namespace']:
-                            self.df.df_tables.loc[-1] = [self.version, self.rinok, os.path.basename(path_file),
-                                                         soup['targetnamespace'], xx['schemalocation'], xx['namespace']]
-                            self.df.df_tables.index = self.df.df_tables.index + 1
-                            self.df.df_tables = self.df.df_tables.sort_index()
-            None
+                            temp_list.append([self.version, self.rinok, os.path.basename(path_file),
+                                                         soup['targetnamespace'], xx['schemalocation'], xx['namespace']])
+            self.tables=pd.DataFrame(data=temp_list,columns=columns)
+            self.df.df_tables_Dic.append(self.tables)
         else:
             None
 
+
     def parsetabThread(self):
-        tabs=[[row['schemalocation'],row['namespace']] for index, row in self.df.df_tables.iterrows()]
+        tabs=[[row['schemalocation'],row['namespace']] for index, row in self.tables.iterrows()]
         if tabs:
             self.parsetab(tabs)
 
@@ -209,7 +215,7 @@ class c_parseTab():
                 'df_rolerefs':self.df.concatDfs(self.df.df_rolerefs_Dic),
                 'df_tableschemas':self.df.concatDfs(self.df.df_tableschemas_Dic),
                 'df_linkbaserefs':self.df.concatDfs(self.df.df_linkbaserefs_Dic),
-                'df_tables': self.df.df_tables,
+                'df_tables': self.df.concatDfs(self.df.df_tables_Dic),
                 'df_tableparts': self.df.concatDfs(self.df.df_tableparts_Dic),
                 'df_va_edmembers':self.df.concatDfs(self.df.df_va_edmembers_Dic),
                 'df_va_edimensions':self.df.concatDfs(self.df.df_va_edimensions_Dic),
@@ -228,7 +234,7 @@ class c_parseTab():
                 }
 
 if __name__ == "__main__":
-    ss=c_parseTab('final_5_2','npf','npf','2023-03-31')
+    ss=c_parseTab('final_6','purcb','purcb','2024-11-01')
     print(datetime.datetime.now())
     tables=ss.startParse()
     print('\n',datetime.datetime.now())

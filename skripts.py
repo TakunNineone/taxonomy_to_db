@@ -1,6 +1,7 @@
 import pandas as pd
 
 sql_delete = """
+drop table if exists xsdfiles;
 drop table if exists tabletags;
 drop table if exists arcs;
 drop table if exists aspectnodes;
@@ -457,7 +458,7 @@ create index messages_rinok on messages (to_tsvector('english'::regconfig,rinok)
 sql_create_elements_labels = """
 create table elements_labels as 
 --insert into elements_labels
-select e.version,e.rinok,e.entity,e.name,e.id,e.qname,e.type,e.substitutiongroup,la.lang,la.label,la.role,e.abstract,la.text
+select e.version,e.rinok,la.entity label_entity,la.label label_id,e.entity,e.name,e.id,e.qname,e.type,e.substitutiongroup,la.lang,la.label,la.role,e.abstract,la.text,full_path
 from 
 elements e 
 left join locators le ON le.href_id = e.id AND le.rinok = e.rinok AND le.locfrom = 'label' and le.version=e.version

@@ -1,10 +1,7 @@
 import gc,os
 import datetime
 
-import pandas as pd
-
 import parseDicNew, parseTab, parseMetaInf, parseIFRS_FULL,parseBadFiles,skripts
-import psycopg2
 from sqlalchemy import create_engine,text
 from bs4 import  BeautifulSoup
 version = 'final_6'
