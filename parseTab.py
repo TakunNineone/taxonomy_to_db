@@ -46,7 +46,7 @@ class c_parseTab():
             self.tables=pd.DataFrame(data=temp_list,columns=columns)
             self.df.df_tables_Dic.append(self.tables)
         else:
-            None
+            self.tables=pd.DataFrame()
 
     def parsenosupport(self):
         temp_list=[]
@@ -84,7 +84,7 @@ class c_parseTab():
             tab_temp=f"{schemalocationnamespace[1]}\\"
             schema_temp=schemalocationnamespace[0]
             schema_temp_2=schema_temp.split('/')[-1]
-            path_xsd=self.path_tax+tab_temp.replace('http://','')+schema_temp_2
+            path_xsd=self.path_tax+tab_temp.replace('http://','')+ schema_temp_2 #('' if '.xsd' in tab_temp else schema_temp_2)
             soup=self.df.parsetag(path_xsd,'schema')
             self.df.parse_tableTags(soup,path_xsd,'table')
             self.df.parseRoletypes(soup.find_all(re.compile('.*roletype$')),path_xsd)
@@ -234,7 +234,7 @@ class c_parseTab():
                 }
 
 if __name__ == "__main__":
-    ss=c_parseTab('final_6','purcb','purcb','2024-11-01')
+    ss=c_parseTab('XBRL_23112023','tu','tu','2023-11-24')
     print(datetime.datetime.now())
     tables=ss.startParse()
     print('\n',datetime.datetime.now())

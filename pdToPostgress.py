@@ -1,13 +1,15 @@
 import gc,os
 import datetime
 
+
 import parseDicNew, parseTab, parseMetaInf, parseIFRS_FULL,parseBadFiles,skripts
+
 from sqlalchemy import create_engine,text
 from bs4 import  BeautifulSoup
-version = 'final_6'
+version = 'XBRL_23112023'
 
 print('begin', datetime.datetime.now())
-conn_string = f'postgresql+psycopg2://postgres:124kosm21@127.0.0.1/{version}'
+conn_string = f'postgresql+psycopg2://postgres:124kosm21@192.168.174.104/{version}'
 db = create_engine(conn_string)
 conn = db.connect()
 print(conn)
@@ -145,19 +147,20 @@ for xx in df_list.keys():
 del df_list
 gc.collect()
 
-ss = parseDicNew.c_parseDic(version, 'eps', 'cbr-coa')
-df_list = ss.startParse()
-df_list = {k: v for k, v in df_list.items() if v is not None}
-print('eps', df_list.keys())
-str_headers = ''
-for xx in df_list.keys():
-    headers = [xx.strip() + ' VARCHAR, ' for xx in df_list.get(xx).keys().values]
-    for hh in headers:
-        str_headers = str_headers + hh + '\n'
-    str_headers = str_headers.strip()[:-1]
-    df_list.get(xx).to_sql(xx[3:], conn, if_exists='append', index=False)
-del df_list
-gc.collect()
+if os.path.exists(f'{os.getcwd()}\\{version}\\www.cbr.ru\\xbrl\\eps'):
+    ss = parseDicNew.c_parseDic(version, 'eps', 'cbr-coa')
+    df_list = ss.startParse()
+    df_list = {k: v for k, v in df_list.items() if v is not None}
+    print('eps', df_list.keys())
+    str_headers = ''
+    for xx in df_list.keys():
+        headers = [xx.strip() + ' VARCHAR, ' for xx in df_list.get(xx).keys().values]
+        for hh in headers:
+            str_headers = str_headers + hh + '\n'
+        str_headers = str_headers.strip()[:-1]
+        df_list.get(xx).to_sql(xx[3:], conn, if_exists='append', index=False)
+    del df_list
+    gc.collect()
 
 if os.path.exists(f'{os.getcwd()}\\{version}\\www.cbr.ru\\xbrl\\bfo\\rep'):
     print('parseTab', 'bfo')
