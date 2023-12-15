@@ -222,6 +222,38 @@ BEGIN
 	end if;
 END;
 $BODY$;
+
+CREATE OR REPLACE FUNCTION public.compare_arrays2(
+	array1 text[],
+	array2 text[])
+    RETURNS integer
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+    comparison_elements text[];
+BEGIN
+	if array2 is null
+	then
+	RETURN 1;
+	end if;
+		
+    -- Находим "элементы для сравнения", которые есть в массиве 1
+    SELECT array_agg(element) INTO comparison_elements
+    FROM unnest(array1) as element
+    WHERE element = ANY (array2);
+	
+-- 	raise notice '%',comparison_elements;
+-- 	raise notice '%',array_length(comparison_elements,1);
+    
+	if array_length(comparison_elements,1)>=1 then
+        RETURN 1;
+    ELSE
+        RETURN 0;
+    END IF;
+END;
+$BODY$;
 """
 sql_indexes = """
 create index elements_v  on elements (version);
@@ -340,6 +372,7 @@ create index messages_parentrole on messages (parentrole);
 create index messages_rinok on messages (rinok);
 """
 sql_indexes_new = """
+create index arcs_v  on arcs (to_tsvector('english'::regconfig,version));
 create index elements_v  on elements (to_tsvector('english'::regconfig,version));
 create index labels_v  on labels (to_tsvector('english'::regconfig,version));
 create index linkbaserefs_v  on linkbaserefs (to_tsvector('english'::regconfig,version));
@@ -370,6 +403,7 @@ create index rulesets_v  on rulesets (to_tsvector('english'::regconfig,version))
 create index catalog_v  on catalog (to_tsvector('english'::regconfig,version));
 create index taxpackage_v  on taxpackage (to_tsvector('english'::regconfig,version));
 
+create index arcs_entity  on arcs (to_tsvector('english'::regconfig,entity));
 create index elements_entity  on elements (to_tsvector('english'::regconfig,entity));
 create index labels_entity  on labels (to_tsvector('english'::regconfig,entity));
 create index linkbaserefs_entity  on linkbaserefs (to_tsvector('english'::regconfig,entity));
@@ -397,6 +431,7 @@ create index rend_edimensions_entity  on rend_edimensions (to_tsvector('english'
 create index rend_edmembers_entity  on rend_edmembers (to_tsvector('english'::regconfig,entity));
 create index rulesets_entity  on rulesets (to_tsvector('english'::regconfig,entity));
 
+create index arcs_parentrole  on arcs (to_tsvector('english'::regconfig,parentrole));
 create index labels_parentrole  on labels (to_tsvector('english'::regconfig,parentrole));
 create index locators_parentrole  on locators (to_tsvector('english'::regconfig,parentrole));
 create index rulenodes_parentrole  on rulenodes (to_tsvector('english'::regconfig,parentrole));
@@ -418,6 +453,7 @@ create index rend_edimensions_parentrole  on rend_edimensions (to_tsvector('engl
 create index rend_edmembers_parentrole  on rend_edmembers (to_tsvector('english'::regconfig,parentrole));
 create index rulesets_parentrole  on rulesets (to_tsvector('english'::regconfig,parentrole));
 
+create index arcs_rinok  on arcs (to_tsvector('english'::regconfig,rinok));
 create index elements_rinok  on elements (to_tsvector('english'::regconfig,rinok));
 create index labels_rinok  on labels (to_tsvector('english'::regconfig,rinok));
 create index linkbaserefs_rinok  on linkbaserefs (to_tsvector('english'::regconfig,rinok));
