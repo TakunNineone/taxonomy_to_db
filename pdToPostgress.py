@@ -6,7 +6,7 @@ import parseDicNew, parseTab, parseMetaInf, parseIFRS_FULL,parseBadFiles,skripts
 
 from sqlalchemy import create_engine,text
 from bs4 import  BeautifulSoup
-version = 'final_5_2'
+version = 'final_6_git'
 
 print('begin', datetime.datetime.now())
 conn_string = f'postgresql+psycopg2://postgres:124kosm21@127.0.0.1/{version}'

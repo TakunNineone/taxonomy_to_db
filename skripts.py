@@ -28,6 +28,7 @@ drop table if exists tableparts;
 drop table if exists tables;
 drop table if exists tableschemas;
 drop table if exists taxpackage;
+drop table if exists va_orfilters;
 drop table if exists va_aspectcovers;
 drop table if exists va_assertions;
 drop table if exists va_assertionsets;
@@ -40,6 +41,38 @@ drop table if exists va_tdimensions;
 drop table if exists rend_conceptrelnodes;
 """
 sql_create_functions = """
+CREATE OR REPLACE FUNCTION public.compare_arrays2(
+	array1 text[],
+	array2 text[])
+    RETURNS integer
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+    comparison_elements text[];
+BEGIN
+	if array2 is null
+	then
+	RETURN 1;
+	end if;
+		
+    -- Находим "элементы для сравнения", которые есть в массиве 1
+    SELECT array_agg(element) INTO comparison_elements
+    FROM unnest(array1) as element
+    WHERE element = ANY (array2);
+	
+-- 	raise notice '%',comparison_elements;
+-- 	raise notice '%',array_length(comparison_elements,1);
+    
+	if array_length(comparison_elements,1)>=1 then
+        RETURN 1;
+    ELSE
+        RETURN 0;
+    END IF;
+END;
+$BODY$;
+
 CREATE OR REPLACE FUNCTION public.array_unique(
 	arr anyarray)
     RETURNS text[]
@@ -505,7 +538,7 @@ left join labels la ON la.rinok = ae.rinok AND la.entity = ae.entity AND la.labe
 sql_create_preferred_labels = """
 create table preferred_labels as
 --insert into preferred_labels
-select a.version,a.rinok,a.entity,a.parentrole,l.href_id,text
+select a.version,a.rinok,a.entity,a.parentrole,l.href_id,el.qname,text
 from arcs a
 join locators l on l.label=a.arcto and l.version=a.version and l.rinok=a.rinok and l.entity=a.entity and a.parentrole=l.parentrole	
 join elements_labels el on el.version=l.version and el.id=l.href_id
