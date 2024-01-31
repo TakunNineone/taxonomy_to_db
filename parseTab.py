@@ -234,10 +234,8 @@ class c_parseTab():
                 }
 
 if __name__ == "__main__":
-    ss=c_parseTab('XBRL_23112023','tu','tu','2023-11-24')
+    ss=c_parseTab('final_5_2_0_6','ins','ins','2023-12-31')
     print(datetime.datetime.now())
     tables=ss.startParse()
     print('\n',datetime.datetime.now())
-    #ss.parsetab(['../tab/sr_Sved_ObOtchOrg/sr_Sved_ObOtchOrg.xsd', 'http://www.cbr.ru/xbrl/nso/ins/rep/2024-11-01/tab/sr_Sved_ObOtchOrg'])
-    #ss.parsetab(['../tab/sr_0420254/sr_0420254.xsd', 'http://www.cbr.ru/xbrl/nso/npf/rep/2024-11-01/tab/sr_0420254'])
     None

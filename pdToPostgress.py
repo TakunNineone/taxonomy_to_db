@@ -1,12 +1,15 @@
 import gc,os
-import datetime
+import datetime,pandas as pd
 
 
 import parseDicNew, parseTab, parseMetaInf, parseIFRS_FULL,parseBadFiles,skripts
 
 from sqlalchemy import create_engine,text
 from bs4 import  BeautifulSoup
-version = 'final_6_git'
+version = 'final_6'
+
+roles_table_definition=pd.read_csv("Сопоставление-ролей-definition-и-table.csv",header=0)
+
 
 print('begin', datetime.datetime.now())
 conn_string = f'postgresql+psycopg2://postgres:124kosm21@127.0.0.1/{version}'
@@ -184,6 +187,8 @@ conn.execute(text (sql_create_functions))
 conn.execute(text (sql_create_elements_labels))
 conn.execute(text (sql_create_preferred_labels))
 conn.execute(text (sql_create_dop_tables))
+if 'final_6' in version:
+    roles_table_definition.to_sql('roles_table_definition', conn, if_exists='replace', index=False)
 
 conn.commit()
 conn.close()

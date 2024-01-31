@@ -346,9 +346,11 @@ class c_parseToDf():
     def parseAspectnodes(self,path):
         soup=self.parsetag(path,'linkbase').find_all_next('table:aspectnode')
         temp_list = []
-        columns = ['version', 'rinok', 'entity', 'parentrole', 'type', 'label', 'title', 'id','includeunreportedvalue','dimension','period']
+        columns = ['version', 'rinok', 'entity', 'parentrole', 'type', 'label', 'title', 'id','includeunreportedvalue','dimension','period','order']
         if soup:
+            i=0
             for xx in soup:
+                i+=1
                 parentrole = xx.parent['xlink:role'] if 'xlink:role' in xx.parent.attrs.keys() else None
                 if xx.find(re.compile('.*dimensionaspect$')):
                     includeunreportedvalue,dimension=xx.find(re.compile('.*dimensionaspect$'))['includeunreportedvalue'] if 'includeunreportedvalue' in xx.find(re.compile('.*dimensionaspect$')).attrs.keys() else None,xx.find(re.compile('.*dimensionaspect$')).text
@@ -364,7 +366,7 @@ class c_parseToDf():
                                         xx['xlink:label'] if 'xlink:label' in xx.attrs.keys() else None,
                                         xx['xlink:title'] if 'xlink:title' in xx.attrs.keys() else None,
                                         xx['id'] if 'id' in xx.attrs.keys() else None,
-                                        includeunreportedvalue,dimension,period
+                                        includeunreportedvalue,dimension,period,i
                                         ])
         df_aspectnodes = pd.DataFrame(data=temp_list, columns=columns)
         self.appendDfs_Dic(self.df_aspectnodes_Dic, df_aspectnodes)
@@ -378,12 +380,14 @@ class c_parseToDf():
         temp_list2 = []
         temp_list3 = []
         temp_list4 = []
-        columns1=['version','rinok', 'entity', 'parentrole', 'type', 'label', 'title', 'id', 'abstract', 'merge','tagselector']
+        columns1=['version','rinok', 'entity', 'parentrole', 'type', 'label', 'title', 'id', 'abstract', 'merge','tagselector','order']
         columns2=['version','rinok', 'entity', 'parentrole', 'rulenode_id','parent_tag','tag', 'dimension', 'member']
         columns3=['version','rinok', 'entity', 'parentrole', 'rulenode_id','parent_tag','tag','value']
         columns4=['version','rinok', 'entity', 'parentrole', 'rulenode_id','parent_tag','tag','period_type','start','end']
         if soup:
+            i=0
             for xx in soup:
+                i+=1
                 parentrole = xx.parent['xlink:role'] if 'xlink:role' in xx.parent.attrs.keys() else None
                 nexttag_e = xx.find_all(re.compile('formula:explicitdimension$'))
                 nexttag_p = xx.find_all(re.compile('formula:period$'))
@@ -396,7 +400,8 @@ class c_parseToDf():
                                         xx['id'] if 'id' in xx.attrs.keys() else None,
                                         xx['abstract'] if 'abstract' in xx.attrs.keys() else None,
                                         xx['merge'] if 'merge' in xx.attrs.keys() else None,
-                                        xx['tagselector'] if 'tagselector' in xx.attrs.keys() else None
+                                        xx['tagselector'] if 'tagselector' in xx.attrs.keys() else None,
+                                        i
                                         ])
                 if nexttag_e:
                     for ee in nexttag_e:
@@ -553,14 +558,19 @@ class c_parseToDf():
     def parseLinkbaserefs(self, soup, full_file_path):
         #print(f'Linkbaserefs - {full_file_path}')
         temp_list=[]
-        columns=['version','rinok', 'entity', 'targetnamespace', 'type', 'href']
+        columns=['version','rinok', 'entity', 'targetnamespace', 'type', 'href','order']
         dict_with_lbrfs=soup.find_all(re.compile('.*linkbaseref$'))
+        i=0
         if dict_with_lbrfs:
             for xx in dict_with_lbrfs:
+                if 'xlink:href' in xx.attrs.keys():
+                    if  '-rend.xml' in xx['xlink:href'] and '../' not in xx['xlink:href']:
+                        i+=1
+
                 temp_list.append([self.version,self.rinok, os.path.basename(full_file_path),
                                            xx.parent.parent.parent['targetnamespace'] if 'targetnamespace' in xx.parent.parent.parent.attrs.keys() else None,
                                                xx['xlink:type'] if 'xlink:type' in xx.attrs.keys() else None,
-                                               xx['xlink:href'] if 'xlink:href' in xx.attrs.keys() else None
+                                               xx['xlink:href'] if 'xlink:href' in xx.attrs.keys() else None,i
                                            ])
         df_linkbaserefs=pd.DataFrame(data=temp_list,columns=columns)
         self.appendDfs_Dic(self.df_linkbaserefs_Dic, df_linkbaserefs)

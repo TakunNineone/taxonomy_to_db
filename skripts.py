@@ -39,8 +39,87 @@ drop table if exists va_factvars;
 drop table if exists va_generals;
 drop table if exists va_tdimensions;
 drop table if exists rend_conceptrelnodes;
+drop table if exists roles_table_definition;
 """
 sql_create_functions = """
+CREATE OR REPLACE FUNCTION public.compare_arrays_datecontrol(
+	arr1 text[],
+	arr2 text[],
+	arr3 text[])
+    RETURNS integer
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+    compare_elements text[];
+    subarrays text[];
+	subarr text;
+	check_element text;
+	check_ int := 0;
+BEGIN
+	--RAISE NOTICE 'arr1  %', arr1;
+
+    IF arr2 IS NULL or arr1 = '{}' or array_length(arr3,1)=1 THEN
+        RETURN 0;
+    END IF;
+	
+	if arr3 !='{}' then
+	foreach subarr in array arr1
+	loop
+		if split_part(subarr,'#',1) = ANY(arr3) then
+		else 
+		arr1=array_remove(arr1,subarr);
+		end if;
+	end loop;
+	end if;
+	
+	foreach subarr in array arr2
+		loop
+			subarrays = string_to_array(subarr, ';');
+			--RAISE NOTICE 'subarrays  %', subarrays;
+			check_=compare_two_arrays(arr1,subarrays);
+			--RAISE NOTICE 'subarrays  %', check_;
+			if check_=1 then
+				return 1;
+			end if;
+		end loop;
+	return 0;
+END;
+$BODY$;
+
+CREATE OR REPLACE FUNCTION public.remove_elements_from_array_datecontrol(
+	arr1 text[],
+	arr2 text[])
+    RETURNS text[]
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE    result text[];
+xx text;
+subarr text;
+BEGIN
+    if arr1 is not null and arr2 is not null then
+		FOREACH subarr IN ARRAY arr2
+		loop
+			foreach xx in array string_to_array(subarr,';')
+			LOOP  
+ 				if split_part(xx,'#',1) = ANY (select split_part(yy,'#',1) from unnest(arr1) as yy) then
+--  				if xx = ANY (arr1) then
+					result = result||split_part(xx,'#',1);
+				end if;
+			END LOOP;    
+		end loop;
+		RETURN array_unique(result);
+	else 
+	return(arr1);
+	end if;
+END;
+$BODY$;
+
+
+
 CREATE OR REPLACE FUNCTION public.compare_arrays2(
 	array1 text[],
 	array2 text[])
@@ -132,38 +211,42 @@ BEGIN
     -- Разбиваем элементы arr2 на подмассивы
     FOREACH subarr IN ARRAY arr2
     LOOP
-        subarrays := subarrays ||  array( select split_part(x,'#',1) from unnest(string_to_array(subarr, ';')) as x )  ;
-    END LOOP;
+        subarrays := array( select split_part(x,'#',1) from unnest(string_to_array(subarr, ';')) as x )  ;
+ 		RAISE NOTICE 'Notice message  %', subarrays;
+    
 
-    -- Убираем дубликаты и пустые строки
-    subarrays := array_remove(subarrays, NULL);
-    subarrays := array_remove(subarrays, '');
-	--RAISE NOTICE 'Notice message  %', subarrays;
+		-- Убираем дубликаты и пустые строки
+		subarrays := array_remove(subarrays, NULL);
+		subarrays := array_remove(subarrays, '');
+-- 		RAISE NOTICE 'Notice message  %', subarrays;
+	
+	
 
-    -- Находим элементы для сравнения (которые есть в arr1 и в subarrays)
-    SELECT array_agg(DISTINCT elem)
-    INTO compare_elements
-    FROM unnest(arr1) AS elem
-    WHERE split_part(elem,'#',1) = ANY(subarrays);
-	if compare_elements is null then
-		return 0;
-	end if;
+		-- Находим элементы для сравнения (которые есть в arr1 и в subarrays)
+		SELECT array_agg(DISTINCT elem)
+		INTO compare_elements
+		FROM unnest(arr1) AS elem
+		WHERE split_part(elem,'#',1) = ANY(subarrays);
+		if compare_elements is null then
+			return 0;
+		end if;
 
-  	FOREACH subarr IN ARRAY arr2
-		loop
-			FOREACH check_element in array compare_elements
-				loop
-					if check_element = ANY (string_to_array(subarr, ';')) then
-					else
-					check_=0;
-					end if;
-				end loop;
-			if check_=1 then
-				return 1;
-			else
-				check_=1;
-			end if;
-		end loop;
+		FOREACH subarr IN ARRAY arr2
+			loop
+				FOREACH check_element in array compare_elements
+					loop
+						if check_element = ANY (string_to_array(subarr, ';')) then
+						else
+						check_=0;
+						end if;
+					end loop;
+				if check_=1 then
+					return 1;
+				else
+					check_=1;
+				end if;
+			end loop;
+		END LOOP;
 		return 0;
 END;
 $BODY$;
@@ -183,15 +266,21 @@ declare
 BEGIN
    text_line=replace(replace(replace(replace($1,
         ' ', ' '),
-        E'\n', ' '),
-        E'\t', ' '),
-        E'\r', ' ');
-   FOREACH m IN ARRAY string_to_array(text_line,' ')
-   loop
- if trim(m)!='' then
-  res=array_append(res,m);
- end if;
- end loop;
+        E'
+', ' '),
+        E'	', ' '),
+        E'
+', ' ');
+   if LENGTH(text_line) > 0 then
+	   FOREACH m IN ARRAY string_to_array(text_line,' ')
+	   loop
+		 if trim(m)!='' then
+		  res=array_append(res,m);
+		 end if;
+		 end loop;
+	else
+	res=text_line;
+	end if;
 ret_txt:=array_to_string(res,' ');
 return ret_txt;
 END;
@@ -552,3 +641,4 @@ CREATE TABLE IF NOT EXISTS public.roles_table_definition
     role_table text COLLATE pg_catalog."default"
 )
 """
+
