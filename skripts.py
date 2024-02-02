@@ -42,6 +42,84 @@ drop table if exists rend_conceptrelnodes;
 drop table if exists roles_table_definition;
 """
 sql_create_functions = """
+CREATE OR REPLACE FUNCTION public.arr1_in_arr2_hard(
+	array1 text[],
+	array2 text[])
+    RETURNS integer
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+   	elem text;
+	check_ int :=0;
+BEGIN
+	if array2 is null
+	then
+	RETURN 0;
+	end if;
+	
+	
+	if array1=array2 then
+		return 1;
+	end if;
+		
+	FOREACH elem IN ARRAY array1
+	loop
+		if elem = ANY (select xx from unnest(array2) as xx) then
+			check_=1;
+		else
+			return 0;
+		end if;
+	end loop;
+	if check_=1 then
+		return 1;
+	else 
+		return 0;
+	end if;
+	
+END;
+$BODY$;
+
+CREATE OR REPLACE FUNCTION public.arr1_in_arr2_light(
+	array1 text[],
+	array2 text[])
+    RETURNS integer
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+   	elem text;
+	check_ int :=0;
+BEGIN
+	if array2 is null
+	then
+	RETURN 0;
+	end if;
+	
+	
+	if array1=array2 then
+		return 1;
+	end if;
+		
+	FOREACH elem IN ARRAY array1
+	loop
+		if lower( replace(delete_space_and_tab(elem), E'\u00a0', ' ') )= ANY (select lower( replace(delete_space_and_tab(xx), E'\u00a0', ' ') ) from unnest(array2) as xx) then
+			check_=1;
+		else
+			return 0;
+		end if;
+	end loop;
+	if check_=1 then
+		return 1;
+	else 
+		return 0;
+	end if;
+	
+END;
+$BODY$;
+
 CREATE OR REPLACE FUNCTION public.compare_arrays_datecontrol(
 	arr1 text[],
 	arr2 text[],
@@ -626,8 +704,7 @@ left join labels la ON la.rinok = ae.rinok AND la.entity = ae.entity AND la.labe
 """
 sql_create_preferred_labels = """
 create table preferred_labels as
---insert into preferred_labels
-select a.version,a.rinok,a.entity,a.parentrole,l.href_id,el.qname,text
+select a.version,a.rinok,a.entity,a.parentrole,l.href_id,el.qname,el.role,el.abstract,el.type,el.substitutiongroup,text
 from arcs a
 join locators l on l.label=a.arcto and l.version=a.version and l.rinok=a.rinok and l.entity=a.entity and a.parentrole=l.parentrole	
 join elements_labels el on el.version=l.version and el.id=l.href_id

@@ -1,15 +1,18 @@
-import gc,os
+import gc,os,sys
 import datetime,pandas as pd
-import sys
+
 
 import parseDicNew, parseTab, parseMetaInf, parseIFRS_FULL,parseBadFiles,skripts
 
 from sqlalchemy import create_engine,text
 from bs4 import  BeautifulSoup
-version = 'final_6'
 
-roles_table_definition_6=pd.read_csv("Сопоставление-ролей-definition-и-table.csv",header=0)
-roles_table_definition_5_3=pd.read_csv('bfo_roles_definition_table_5_3.csv',header=0)
+
+
+version = sys.argv[2]
+
+roles_table_definition_6=pd.read_csv(sys.argv[1]+'/'+"Сопоставление-ролей-definition-и-table.csv",header=0)
+roles_table_definition_5_3=pd.read_csv(sys.argv[1]+'/'+'bfo_roles_definition_table_5_3.csv',header=0)
 
 
 print('begin', datetime.datetime.now())
@@ -196,3 +199,4 @@ elif 'final_5_3' in version:
 conn.commit()
 conn.close()
 print('end', datetime.datetime.now())
+exit()
