@@ -57,6 +57,7 @@ class c_parseToDf():
     def parse_tableTags(self,soup,path,tags_from):
         temp_list=[]
         columns = ['version','rinok','entity','tags','tag_from']
+        # print(os.path.basename(path))
         tags=list(set([tag.name for tag in soup.find_all()]))
         temp_list.append([self.version,self.rinok,os.path.basename(path),tags,tags_from])
         df_tableTags=pd.DataFrame(data=temp_list,columns=columns)

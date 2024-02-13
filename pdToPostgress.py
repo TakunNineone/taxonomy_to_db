@@ -6,7 +6,7 @@ import parseDicNew, parseTab, parseMetaInf, parseIFRS_FULL,parseBadFiles,skripts
 
 from sqlalchemy import create_engine,text
 from bs4 import  BeautifulSoup
-version = 'final_6'
+version = 'final_6_1'
 
 roles_table_definition_6=pd.read_csv("Сопоставление-ролей-definition-и-table.csv",header=0)
 roles_table_definition_5_3=pd.read_csv('bfo_roles_definition_table_5_3.csv',header=0)
@@ -14,13 +14,13 @@ roles_table_definition_5_3=pd.read_csv('bfo_roles_definition_table_5_3.csv',head
 
 print('begin', datetime.datetime.now())
 conn_string = f'postgresql+psycopg2://postgres:124kosm21@127.0.0.1/{version}'
-db = create_engine(conn_string)
+db = create_engine(conn_string,isolation_level="AUTOCOMMIT")
 conn = db.connect()
 print(conn)
 
 
 
-with open(f'{os.getcwd()}\\{version}\\description.xml','r') as f:
+with open(f'{os.getcwd()}\\{version}\\description.xml','r',encoding='utf-8') as f:
     period=BeautifulSoup(f,'lxml')
 period=f"{period.find('version').text[:4]}-{period.find('version').text[4:6]}-{period.find('version').text[6:8]}"
 nso=os.listdir(f'{os.getcwd()}\\{version}\\www.cbr.ru\\xbrl\\nso')

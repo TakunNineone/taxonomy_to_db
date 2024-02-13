@@ -23,7 +23,7 @@ print(conn)
 
 
 
-with open(f'{os.getcwd()}\\{version}\\description.xml','r') as f:
+with open(f'{os.getcwd()}\\{version}\\description.xml','r',encoding='utf-8') as f:
     period=BeautifulSoup(f,'lxml')
 period=f"{period.find('version').text[:4]}-{period.find('version').text[4:6]}-{period.find('version').text[6:8]}"
 nso=os.listdir(f'{os.getcwd()}\\{version}\\www.cbr.ru\\xbrl\\nso')
