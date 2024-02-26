@@ -748,7 +748,7 @@ create table elements_labels as
 select e.version,e.rinok,la.entity label_entity,la.label label_id,e.entity,e.name,e.id,e.qname,e.type,e.substitutiongroup,la.lang,la.label,la.role,e.abstract,la.text,full_path
 from 
 elements e 
-left join locators le ON le.href_id = e.id AND le.rinok = e.rinok AND le.locfrom = 'label' and le.version=e.version
+left join locators le ON le.href_id = e.id AND le.locfrom = 'label' and le.version=e.version
 left join arcs ae ON ae.rinok = le.rinok AND ae.entity = le.entity AND ae.arcfrom = le.label 
 AND ae.arctype = 'label' and ae.version=le.version
 left join labels la ON la.rinok = ae.rinok AND la.entity = ae.entity AND la.label = ae.arcto and la.version=ae.version
@@ -765,6 +765,7 @@ and el.role=a.preferredlabel;
 sql_create_dop_tables = """
 CREATE TABLE IF NOT EXISTS public.roles_table_definition
 (
+    rinok text COLLATE pg_catalog."default",
     role_definition text COLLATE pg_catalog."default",
     role_table text COLLATE pg_catalog."default"
 )
