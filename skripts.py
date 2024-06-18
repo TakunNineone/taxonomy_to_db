@@ -11,6 +11,7 @@ drop table if exists elements_labels;
 drop table if exists entrypoints;
 drop table if exists labels;
 drop table if exists linkbaserefs;
+drop table if exists linkbases;
 drop table if exists locators;
 drop table if exists messages;
 drop table if exists preconditions;
@@ -164,6 +165,33 @@ BEGIN
 	
 END;
 $BODY$;
+
+CREATE OR REPLACE FUNCTION public.compare_two_arrays(
+	arr1 text[],
+	arr2 text[])
+    RETURNS integer
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+    compare_elements text[];
+    subarrays text[];
+	subarr text;
+	check_element text;
+	check_ int :=1;
+BEGIN
+	foreach subarr in array arr1
+	 loop
+	 	if subarr = ANY (arr2) then
+		else 
+		return 0;
+		end if;
+	 end loop;
+	return 1;
+END;
+$BODY$;
+
 
 CREATE OR REPLACE FUNCTION public.compare_arrays_datecontrol(
 	arr1 text[],

@@ -92,7 +92,7 @@ class c_parseDic():
                 'df_tabletags':self.df.concatDfs(self.df.df_tabletags_Dic)}
 
 if __name__ == "__main__":
-    ss=c_parseDic('final_6_5','kra','kra')
+    ss=c_parseDic('final_5_2','operatory','oper')
     dfs=ss.startParse()
 
     None

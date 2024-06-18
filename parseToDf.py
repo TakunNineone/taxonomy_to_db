@@ -479,7 +479,7 @@ class c_parseToDf():
     def parseElements(self,dict_with_lbrfs, full_file_path):
         #print(f'Elements - {full_file_path}')
         temp_list=[]
-        columns=['version','rinok', 'entity', 'targetnamespace', 'name', 'id','qname', 'type',
+        columns=['version','rinok', 'entity', 'targetnamespace', 'name', 'id','qname', 'type','r_type',
                                                  'typeddomainref', 'substitutiongroup', 'periodtype', 'abstract',
                                                  'nillable', 'creationdate', 'fromdate', 'enumdomain', 'enum2domain',
                                                  'enumlinkrole', 'enum2linkrole','pattern','minlength']
@@ -503,7 +503,9 @@ class c_parseToDf():
                 restriction=xx.find('xsd:restriction')
                 pattern = None
                 minlength = None
+                restr_type= None
                 if restriction:
+                    restr_type=restriction['base'] if 'base' in restriction.attrs.keys() else None
                     #print(xx['name'])
                     attrs=restriction.findChildren()
                     for aa in attrs:
@@ -516,8 +518,10 @@ class c_parseToDf():
                     xx.parent['targetnamespace'] if 'targetnamespace' in xx.parent.attrs.keys() else None,
                     xx['name'] if 'name' in xx.attrs else None,
                     xx['id'] if 'id' in xx.attrs else None,
-                    xx['id'].replace(qname_rep+'_',qname_rep+':') if 'id' in xx.attrs else None,
-                    xx['type'] if 'type' in xx.attrs else None,
+                    # xx['id'].replace(qname_rep+'_',qname_rep+':') if 'id' in xx.attrs else None,
+                    qname_rep+':'+xx['name'] if 'name' in xx.attrs else None,
+                    xx['type'] if 'type' in xx.attrs else restr_type,
+                    restr_type,
                     xx['xbrldt:typeddomainref'] if 'xbrldt:typeddomainref' in xx.attrs else None,
                     xx['substitutiongroup'] if 'substitutiongroup' in xx.attrs else None,
                     xx['xbrli:periodtype'] if 'xbrli:periodtype' in xx.attrs else None,

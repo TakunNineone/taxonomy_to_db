@@ -6,7 +6,7 @@ import parseDicNew, parseTab, parseMetaInf, parseIFRS_FULL,parseBadFiles,skripts
 
 from sqlalchemy import create_engine,text
 from bs4 import  BeautifulSoup
-version = 'final_6_0'
+version = 'final_6_git'
 
 roles_table_definition_6=pd.read_csv("Сопоставление-ролей-definition-и-table.csv",header=0)
 roles_table_definition_5_3=pd.read_csv('bfo_roles_definition_table_5_3.csv',header=0)
@@ -23,7 +23,10 @@ print(conn)
 with open(f'{os.getcwd()}\\{version}\\description.xml','r',encoding='utf-8') as f:
     period=BeautifulSoup(f,'lxml')
 period=f"{period.find('version').text[:4]}-{period.find('version').text[4:6]}-{period.find('version').text[6:8]}"
-nso=os.listdir(f'{os.getcwd()}\\{version}\\www.cbr.ru\\xbrl\\nso')
+try:
+    nso=os.listdir(f'{os.getcwd()}\\{version}\\www.cbr.ru\\xbrl\\nso')
+except:
+    nso=[]
 nso=[[xx,xx if xx!='operatory' else 'oper']  for xx in nso]
 
 
@@ -64,35 +67,36 @@ for xx in df_list.keys():
 del df_list
 gc.collect()
 
-for rinok in nso:
-    print('parseTab', rinok)
-    ss1 = parseTab.c_parseTab(version, rinok[0], rinok[1], period)
-    df_list1 = ss1.startParse()
-    df_list1 = {k: v for k, v in df_list1.items() if v is not None}
-    str_headers = ''
-    for xx in df_list1.keys():
-        headers = [xx.strip() + ' VARCHAR, ' for xx in df_list1.get(xx).keys().values]
-        for hh in headers:
-            str_headers = str_headers + hh + '\n'
-        str_headers = str_headers.strip()[:-1]
-        df_list1.get(xx).to_sql(xx[3:], conn, if_exists='append', index=False)
-    del df_list1, ss1
-    gc.collect()
+if nso!=[]:
+    for rinok in nso:
+        print('parseTab', rinok)
+        ss1 = parseTab.c_parseTab(version, rinok[0], rinok[1], period)
+        df_list1 = ss1.startParse()
+        df_list1 = {k: v for k, v in df_list1.items() if v is not None}
+        str_headers = ''
+        for xx in df_list1.keys():
+            headers = [xx.strip() + ' VARCHAR, ' for xx in df_list1.get(xx).keys().values]
+            for hh in headers:
+                str_headers = str_headers + hh + '\n'
+            str_headers = str_headers.strip()[:-1]
+            df_list1.get(xx).to_sql(xx[3:], conn, if_exists='append', index=False)
+        del df_list1, ss1
+        gc.collect()
 
-    print('parseDic', rinok)
-    ss2 = parseDicNew.c_parseDic(version, rinok[0], rinok[1])
-    df_list2 = ss2.startParse()
-    df_list2 = {k: v for k, v in df_list2.items() if v is not None}
-    print(df_list2.keys())
-    str_headers = ''
-    for xx in df_list2.keys():
-        headers = [xx.strip() + ' VARCHAR, ' for xx in df_list2.get(xx).keys().values]
-        for hh in headers:
-            str_headers = str_headers + hh + '\n'
-        str_headers = str_headers.strip()[:-1]
-        df_list2.get(xx).to_sql(xx[3:], conn, if_exists='append', index=False)
-    del df_list2, ss2
-    gc.collect()
+        print('parseDic', rinok)
+        ss2 = parseDicNew.c_parseDic(version, rinok[0], rinok[1])
+        df_list2 = ss2.startParse()
+        df_list2 = {k: v for k, v in df_list2.items() if v is not None}
+        print(df_list2.keys())
+        str_headers = ''
+        for xx in df_list2.keys():
+            headers = [xx.strip() + ' VARCHAR, ' for xx in df_list2.get(xx).keys().values]
+            for hh in headers:
+                str_headers = str_headers + hh + '\n'
+            str_headers = str_headers.strip()[:-1]
+            df_list2.get(xx).to_sql(xx[3:], conn, if_exists='append', index=False)
+        del df_list2, ss2
+        gc.collect()
 
 ss = parseDicNew.c_parseDic(version, 'udr\\dim', 'dim')
 df_list = ss.startParse()

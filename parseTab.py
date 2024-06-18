@@ -37,6 +37,8 @@ class c_parseTab():
             with open(path_file,'rb') as f:
                 ff=f.read()
             soup=BeautifulSoup(ff,'lxml').contents[2].find_next(re.compile('.*schema$'))
+            self.df.parseLinkbase(soup, path_file)
+            # print(path_file)
             self.df.parse_tableTags(soup,path_file,'ep_support')
             namesps=soup.find_all(re.compile('.*import$'))
             for xx in namesps:
@@ -52,6 +54,7 @@ class c_parseTab():
         temp_list=[]
         columns = ['version', 'rinok', 'entity', 'targetnamespace', 'schemalocation', 'namespace']
         path_supp = self.path_folder + '\\ep\\'
+
         if os.path.isdir(path_supp):
             for ep in os.listdir(path_supp):
                 if 'support' not in ep:
@@ -59,6 +62,8 @@ class c_parseTab():
                     with open(path_file, 'rb') as f:
                         ff = f.read()
                     soup = BeautifulSoup(ff, 'lxml').contents[1].find_next(re.compile('.*schema$'))
+                    self.df.parseLinkbase(soup,path_file)
+                    # print(path_file)
                     self.df.parse_tableTags(soup, path_file, 'ep')
                     namesps = soup.find_all(re.compile('.*import$'))
                     for xx in namesps:

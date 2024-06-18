@@ -16,10 +16,13 @@ class c_parseMeta():
 
     def parseentry(self):
         temp_list=[]
-        columns=['version','nfotype','reporttype','reportperiodtype','pathtoxsd','nfotyperus','reporttyperus','reportperiodtyperus','is_exist']
+        columns=['version','nfotype','reporttype','reportperiodtype','pathtoxsd','nfotyperus','reporttyperus',
+                 'reportperiodtyperus','is_exist','tags_in_file','tags_in_entry']
         soup=self.parsetag(f'{self.path}/entry_point.xml','arrayofentrypoint')
         entrypoints=soup.find_all('entrypoint')
+        tag_names_file = list(set([tag.name for tag in soup.find_all(True)]))
         for xx in entrypoints:
+            tag_names_entry = list(set([tag.name for tag in xx.find_all(True)]))
             if os.path.exists(xx.find('pathtoxsd').text.replace('../',f'{self.version}/')):
                 is_exist=True
             else:
@@ -33,7 +36,9 @@ class c_parseMeta():
                 xx.find('nfotyperus').text if xx.find('nfotyperus') else None,
                 xx.find('reporttyperus').text if xx.find('reporttyperus') else None,
                 xx.find('reportperiodtyperus').text if xx.find('reportperiodtyperus') else None,
-                is_exist
+                is_exist,
+                 ','.join(tag_names_file),
+                 ','.join(tag_names_entry),
                  ]
             )
         df_entrypoints = pd.DataFrame(data=temp_list,columns=columns)
