@@ -42,6 +42,7 @@ class c_parseToDf():
         self.df_va_orfilters_Dic=[]
         self.df_preconditions_Dic=[]
         self.df_messages_Dic=[]
+        self.df_periodinstantfilter_Dic=[]
         self.df_linkbases_Dic=[]
         self.df_tables_Dic = []
 
@@ -101,6 +102,48 @@ class c_parseToDf():
         df_messages = pd.DataFrame(data=temp_list, columns=columns)
         self.df_messages_Dic.append(df_messages)
         #del df_messages, temp_list
+
+    def parse_periodinstantfilter(self,soup,path):
+        temp_list = []
+        columns = ['version', 'rinok', 'entity', 'parentrole', 'type', 'label', 'title', 'id', 'date','tag_type']
+        soup1 = soup.find_all_next(re.compile('.*periodinstant$'))
+        soup2 = soup.find_all_next(re.compile('.*periodstart$'))
+        soup3 = soup.find_all_next(re.compile('.*periodend$'))
+        for xx in soup1:
+            parentrole = xx.parent['xlink:role'] if 'xlink:role' in xx.parent.attrs.keys() else None,
+            temp_list.append([self.version, self.rinok, os.path.basename(path),
+                              parentrole,
+                              xx['xlink:type'] if 'xlink:type' in xx.attrs.keys() else None,
+                              xx['xlink:label'] if 'xlink:label' in xx.attrs.keys() else None,
+                              xx['xlink:title'] if 'xlink:title' in xx.attrs.keys() else None,
+                              xx['id'] if 'id' in xx.attrs.keys() else None,
+                              xx['date'] if 'date' in xx.attrs.keys() else None,
+                              'instant'
+                              ])
+        for xx in soup2:
+            parentrole = xx.parent['xlink:role'] if 'xlink:role' in xx.parent.attrs.keys() else None,
+            temp_list.append([self.version, self.rinok, os.path.basename(path),
+                              parentrole,
+                              xx['xlink:type'] if 'xlink:type' in xx.attrs.keys() else None,
+                              xx['xlink:label'] if 'xlink:label' in xx.attrs.keys() else None,
+                              xx['xlink:title'] if 'xlink:title' in xx.attrs.keys() else None,
+                              xx['id'] if 'id' in xx.attrs.keys() else None,
+                              xx['date'] if 'date' in xx.attrs.keys() else None,
+                              'start'
+                              ])
+        for xx in soup3:
+            parentrole = xx.parent['xlink:role'] if 'xlink:role' in xx.parent.attrs.keys() else None,
+            temp_list.append([self.version, self.rinok, os.path.basename(path),
+                              parentrole,
+                              xx['xlink:type'] if 'xlink:type' in xx.attrs.keys() else None,
+                              xx['xlink:label'] if 'xlink:label' in xx.attrs.keys() else None,
+                              xx['xlink:title'] if 'xlink:title' in xx.attrs.keys() else None,
+                              xx['id'] if 'id' in xx.attrs.keys() else None,
+                              xx['date'] if 'date' in xx.attrs.keys() else None,
+                              'end'
+                              ])
+        df_periodinstantfilter = pd.DataFrame(data=temp_list, columns=columns)
+        self.df_periodinstantfilter_Dic.append(df_periodinstantfilter)
 
     def parse_assertions(self,soup,path,tag):
         # print(f'parse_assertions - {path}')

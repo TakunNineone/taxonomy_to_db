@@ -15,7 +15,7 @@ class date_control():
                                         password="124kosm21",
                                         host="127.0.0.1",
                                         port="5432",
-                                        database="final_6_predvarit_2")
+                                        database="final_6_1_27062024")
 
 
     def do_sql(self):
@@ -23,24 +23,24 @@ class date_control():
 select full_path,array_agg(array[label_id,text,mod_label_text]) text
 from
 (
-select qname,full_path,label_id,text,mod_label_text
+select distinct qname,full_path,label_id,text,mod_label_text
 from
 (
 select qname,full_path,label_id,text,text_mod1,
-case when text_mod1 not like 'ifrs-ru%' and text_mod1 not like 'ifrs-full%' then 
+case when text_mod1 not like 'dim%' and text_mod1 not like 'mem%' then 
 upper(substring(text_mod1 from 1 for 1)) || substring(text_mod1 from 2 for length(text_mod1))  else text_mod1 end
 mod_label_text
 from
 (
 select qname,full_path,label_id,text,delete_space_and_tab(text) text_mod1
 from elements_labels 
-where rinok in ('bfo','ifrs-full') and  (qname like 'ifrs-ru%' or qname like 'ifrs-full%')
+where rinok in ('dim','mem')
 	
 	union all
 	
 select qname,full_path,label_id,text,delete_space_and_tab(text) text_mod1 
 from preferred_labels 
-where full_path like '%dictionary-label.xml'
+where full_path like '%dim-int-label.xml' or full_path like '%mem-int-label.xml'
 ) mm
 ) mm 
 where mod_label_text!=text

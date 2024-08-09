@@ -6,7 +6,7 @@ import parseDicNew, parseTab, parseMetaInf, parseIFRS_FULL,parseBadFiles,skripts
 
 from sqlalchemy import create_engine,text
 from bs4 import  BeautifulSoup
-version = 'final_5_3'
+version = 'final_6_2_bfo'
 
 print('begin', datetime.datetime.now())
 conn_string = f'postgresql+psycopg2://postgres:124kosm21@127.0.0.1/{version}_bfo'
@@ -147,7 +147,7 @@ if os.path.exists(f'{os.getcwd()}\\{version}\\www.cbr.ru\\xbrl\\bfo\\rep'):
 
 
 
-conn.execute(text (sql_indexes))
+# conn.execute(text (sql_indexes))
 conn.execute(text (sql_create_functions))
 conn.execute(text (sql_create_elements_labels))
 conn.execute(text (sql_create_preferred_labels))
