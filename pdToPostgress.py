@@ -6,7 +6,7 @@ import parseDicNew, parseTab, parseMetaInf, parseIFRS_FULL,parseBadFiles,skripts
 
 from sqlalchemy import create_engine,text
 from bs4 import  BeautifulSoup
-version = '111'
+version = 'final_5_2_0_9'
 
 roles_table_definition_6=pd.read_csv("Сопоставление-ролей-definition-и-table.csv",header=0)
 roles_table_definition_5_3=pd.read_csv('bfo_roles_definition_table_5_3.csv',header=0)
@@ -194,8 +194,8 @@ conn.execute(text (sql_create_preferred_labels))
 conn.execute(text (sql_create_dop_tables))
 if 'final_6' in version:
     roles_table_definition_6.to_sql('roles_table_definition', conn, if_exists='replace', index=False)
-elif 'final_5_3' in version:
-    roles_table_definition_5_3.to_sql('roles_table_definition', conn, if_exists='replace', index=False)
+# elif 'final_5_3' in version:
+#     roles_table_definition_5_3.to_sql('roles_table_definition', conn, if_exists='replace', index=False)
 
 conn.commit()
 conn.close()

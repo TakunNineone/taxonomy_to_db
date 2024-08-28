@@ -33,6 +33,7 @@ class c_parseToDf():
         self.df_va_edmembers_Dic = []
         self.df_va_edimensions_Dic = []
         self.df_va_tdimensions_Dic = []
+        self.df_va_mdimensions_Dic = []
         self.df_va_concepts_Dic = []
         self.df_va_factvars_Dic = []
         self.df_va_assertions_Dic = []
@@ -40,11 +41,13 @@ class c_parseToDf():
         self.df_va_aspectcovers_Dic=[]
         self.df_va_assertionset_Dic=[]
         self.df_va_orfilters_Dic=[]
+        self.df_va_link_Dic=[]
         self.df_preconditions_Dic=[]
         self.df_messages_Dic=[]
         self.df_periodinstantfilter_Dic=[]
         self.df_linkbases_Dic=[]
         self.df_tables_Dic = []
+
 
     def parseLinkbase(self,soup,path):
         temp_list=[]
@@ -326,6 +329,23 @@ class c_parseToDf():
         self.df_va_edmembers_Dic.append(df_va_edmembers)
         self.df_va_edimensions_Dic.append(df_va_edimensions)
         #del df_va_edmembers,df_va_edimensions,temp_list1,temp_list2
+
+    def parse_mDimension(self,soup,path):
+        temp_list=[]
+        columns=['version','rinok', 'entity', 'parentrole', 'type', 'label', 'title', 'id','variable', 'dimension']
+        soup=soup.find_all_next(re.compile('.*matchdimension$'))
+        for xx in soup:
+            temp_list.append([self.version, self.rinok, os.path.basename(path),
+                              xx.parent['xlink:role'] if 'xlink:role' in xx.parent.attrs.keys() else None,
+                              xx['xlink:type'] if 'xlink:type' in xx.attrs.keys() else None,
+                              xx['xlink:label'] if 'xlink:label' in xx.attrs.keys() else None,
+                              xx['xlink:title'] if 'xlink:title' in xx.attrs.keys() else None,
+                              xx['id'] if 'id' in xx.attrs.keys() else None,
+                              xx['variable'] if 'variable' in xx.attrs.keys() else None,
+                              xx['dimension'] if 'dimension' in xx.attrs.keys() else None,
+                              ])
+        df_va_mdimensions=pd.DataFrame(data=temp_list,columns=columns)
+        self.df_va_mdimensions_Dic.append(df_va_mdimensions)
 
 
     def generator_2(self,iterable):
@@ -697,7 +717,19 @@ class c_parseToDf():
                                            ])
         df_rolerefs=pd.DataFrame(data=temp_list,columns=columns)
         self.appendDfs_Dic(self.df_rolerefs_Dic, df_rolerefs)
-       # del df_rolerefs,temp_list
+
+    def parseLink(self,dict_with_rlrfs,full_file_path):
+        temp_list=[]
+        columns=['version','rinok', 'entity', 'type', 'role']
+        if dict_with_rlrfs:
+            for xx in dict_with_rlrfs:
+                temp_list.append([self.version,self.rinok, os.path.basename(full_file_path),
+                                           xx['xlink:type'] if 'xlink:type' in xx.attrs.keys() else None,
+                                           xx['xlink:role'] if 'xlink:role' in xx.attrs.keys() else None,
+                                           ])
+        df_va_link=pd.DataFrame(data=temp_list,columns=columns)
+        self.appendDfs_Dic(self.df_va_link_Dic, df_va_link)
+
 
     def parseTableschemas(self,dict_with_tsch,full_file_path,tag):
         #print(f'Tableschemas - {full_file_path}')

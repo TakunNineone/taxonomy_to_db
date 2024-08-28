@@ -107,6 +107,7 @@ class c_parseTab():
                     self.df.parse_tableTags(soup_formula, path, 'formula')
                     self.df.parse_generals(soup_formula.find_all_next(re.compile('.*generalvariable$')),path)
                     self.df.parseRolerefs(soup_formula.find_all(re.compile('.*roleref$')),path,'formula')
+                    self.df.parseLink(soup_formula.find_all(re.compile('.*link$')), path)
                     self.df.parseArcs(soup_formula.find_all_next(re.compile('.*variablearc$')),path,'formula')
                     self.df.parseArcs(soup_formula.find_all_next(re.compile('.*variablefilterarc$')), path, 'formula')
                     self.df.parseArcs(soup_formula.find_all_next(re.compile('.*variablesetfilterarc$')), path, 'formula')
@@ -125,6 +126,7 @@ class c_parseTab():
                     self.df.parse_precond(soup_formula,path)
                     self.df.parse_messages(soup_formula,path)
                     self.df.parse_periodinstantfilter(soup_formula,path)
+                    self.df.parse_mDimension(soup_formula,path)
             rend = [f"{self.path_tax}{tab_temp.replace('http://', '')}{yy['xlink:href']}" for yy in linkbaserefs if
                     re.findall(r'rend\S*.xml',yy['xlink:href'])]
             [self.parserends(r) for r in rend if rend]
@@ -233,11 +235,13 @@ class c_parseTab():
                 'df_va_aspectcovers': self.df.concatDfs(self.df.df_va_aspectcovers_Dic),
                 'df_va_assertionsets': self.df.concatDfs(self.df.df_va_assertionset_Dic),
                 'df_va_orfilters': self.df.concatDfs(self.df.df_va_orfilters_Dic),
+                'df_va_mdimensions': self.df.concatDfs(self.df.df_va_mdimensions_Dic),
                 'df_preconditions': self.df.concatDfs(self.df.df_preconditions_Dic),
                 'df_messages': self.df.concatDfs(self.df.df_messages_Dic),
                 'df_tabletags': self.df.concatDfs(self.df.df_tabletags_Dic),
                 'df_linkbases': self.df.concatDfs(self.df.df_linkbases_Dic),
-                'df_va_periods': self.df.concatDfs(self.df.df_periodinstantfilter_Dic)
+                'df_va_periods': self.df.concatDfs(self.df.df_periodinstantfilter_Dic),
+                'df_va_link': self.df.concatDfs(self.df.df_va_link_Dic)
                 }
 
 if __name__ == "__main__":
