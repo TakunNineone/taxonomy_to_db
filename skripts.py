@@ -762,17 +762,17 @@ create table elements_labels as
 select e.version,e.rinok,la.entity label_entity,la.label label_id,e.entity,e.name,e.id,e.qname,e.type,e.substitutiongroup,la.lang,la.label,la.role,e.abstract,la.text,full_path
 from 
 elements e 
-left join locators le ON le.href_id = e.id AND le.locfrom = 'label' and le.version=e.version
+left join locators le ON le.href_id = e.id AND le.locfrom = 'label'
 left join arcs ae ON ae.rinok = le.rinok AND ae.entity = le.entity AND ae.arcfrom = le.label 
 AND ae.arctype = 'label' and ae.version=le.version
-left join labels la ON la.rinok = ae.rinok AND la.entity = ae.entity AND la.label = ae.arcto and la.version=ae.version
+left join labels la ON la.rinok = ae.rinok AND la.entity = ae.entity AND la.label = ae.arcto
 """
 sql_create_preferred_labels = """
 create table preferred_labels as
 select a.version,a.rinok,a.entity,a.parentrole,l.href_id id,el.qname,el.role,el.abstract,el.type,el.substitutiongroup,text,full_path,label_id
 from arcs a
-join locators l on l.label=a.arcto and l.version=a.version and l.rinok=a.rinok and l.entity=a.entity and a.parentrole=l.parentrole	
-join elements_labels el on el.version=l.version and el.id=l.href_id
+join locators l on l.label=a.arcto and l.rinok=a.rinok and l.entity=a.entity and a.parentrole=l.parentrole	
+join elements_labels el on el.id=l.href_id
 where arctype='presentation' and preferredlabel is not null
 and el.role=a.preferredlabel;
 """

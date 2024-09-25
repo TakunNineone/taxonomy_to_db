@@ -245,7 +245,7 @@ class c_parseTab():
                 }
 
 if __name__ == "__main__":
-    ss=c_parseTab('final_5_2_0_6','ins','ins','2023-12-31')
+    ss=c_parseTab('final_6_1_nso','npf','npf','2024-12-30')
     print(datetime.datetime.now())
     tables=ss.startParse()
     print('\n',datetime.datetime.now())

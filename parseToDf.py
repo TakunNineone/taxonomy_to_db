@@ -206,9 +206,12 @@ class c_parseToDf():
     def parse_aspectcovers(self,soup,path):
         # print(f'parse_aspectcovers - {path}')
         temp_list=[]
-        columns=['version','rinok', 'entity', 'parentrole','type', 'label', 'title', 'id','aspects']
+        aspects=[]
+        dimensions=[]
+        columns=['version','rinok', 'entity', 'parentrole','type', 'label', 'title', 'id','aspects','dims']
         for xx in soup:
             aspects = [yy.text for yy in xx.find_all(re.compile('.*aspect$'))]
+            dimensions = [yy.find(re.compile('.*qname$')).text for yy in xx.find_all(re.compile('.*dimension$'))]
             aspects_str=''
             for yy in aspects:
                 aspects_str=aspects_str+yy+' '
@@ -219,7 +222,8 @@ class c_parseToDf():
                                       xx['xlink:label'] if 'xlink:label' in xx.attrs.keys() else None,
                                       xx['xlink:title'] if 'xlink:title' in xx.attrs.keys() else None,
                                       xx['id'] if 'id' in xx.attrs.keys() else None,
-                                      aspects_str
+                                      aspects,
+                                      dimensions
                                       ])
         df_va_aspectcovers=pd.DataFrame(data=temp_list,columns=columns)
         self.df_va_aspectcovers_Dic.append(df_va_aspectcovers)
