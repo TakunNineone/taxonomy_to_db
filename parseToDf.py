@@ -549,7 +549,7 @@ class c_parseToDf():
         columns=['version','rinok', 'entity', 'targetnamespace', 'name', 'id','qname', 'type','r_type',
                                                  'typeddomainref', 'substitutiongroup', 'periodtype', 'abstract',
                                                  'nillable', 'creationdate', 'fromdate', 'enumdomain', 'enum2domain',
-                                                 'enumlinkrole', 'enum2linkrole','pattern','minlength']
+                                                 'enumlinkrole', 'enum2linkrole','pattern','minlength','documentation']
         if dict_with_lbrfs:
             for xx in dict_with_lbrfs:
                 qname_rep=os.path.basename(full_file_path).replace('.xsd','')
@@ -570,10 +570,13 @@ class c_parseToDf():
                 restriction=xx.find('xsd:restriction')
                 pattern = None
                 minlength = None
-                restr_type= None
+                restr_type = None
+                doc_text = None
+                documentation = xx.find('xsd:annotation')
+                if documentation:
+                    doc_text=documentation.find('xsd:documentation')
                 if restriction:
                     restr_type=restriction['base'] if 'base' in restriction.attrs.keys() else None
-                    #print(xx['name'])
                     attrs=restriction.findChildren()
                     for aa in attrs:
                         if re.search('.*pattern$',aa.name):
@@ -601,7 +604,8 @@ class c_parseToDf():
                     xx['enum:linkrole'] if 'enum:linkrole' in xx.attrs else None,
                     xx['enum2:linkrole'] if 'enum2:linkrole' in xx.attrs else None,
                     pattern,
-                    minlength
+                    minlength,
+                    doc_text.text if doc_text else None
                 ])
         df_elements=pd.DataFrame(data=temp_list,columns=columns)
         self.appendDfs_Dic(self.df_elements_Dic, df_elements)

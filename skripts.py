@@ -44,6 +44,55 @@ drop table if exists rend_conceptrelnodes;
 drop table if exists roles_table_definition;
 """
 sql_create_functions = """
+CREATE OR REPLACE FUNCTION public.array_elem_edit(
+	arr1 text[],
+	arr2 text[])
+    RETURNS text[]
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE    result text[] := arr1;
+BEGIN
+    if arr1 is not null and arr2 is not null then
+		FOR i IN 1..array_length(arr2, 1) LOOP      
+		if arr2[i] in (select unnest(arr1)) then
+			arr1=array_replace(arr1, arr2[i],'nan');
+		end if;
+		END LOOP;    
+		RETURN arr1;
+	else 
+	return(arr1);
+	end if;
+END;
+$BODY$;
+
+CREATE OR REPLACE FUNCTION public.array_elem_replace(
+	array1 text[],
+	check_ integer)
+    RETURNS text[]
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+   	elem text;
+	res_arr text[];
+BEGIN
+	if check_ = 0
+	then
+	RETURN array1;
+	
+	else
+	
+	SELECT array_agg(replace(element,'mem-int:','http://www.cbr.ru/xbrl/udr/dom/mem-int#')) INTO res_arr
+    FROM unnest(array1) as element;
+	
+	return res_arr;
+	end if;
+END;
+$BODY$;
+
 CREATE OR REPLACE FUNCTION public.compare_arrays_tt(
 	array1 text[],
 	array2 text[])
