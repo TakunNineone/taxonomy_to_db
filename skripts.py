@@ -44,6 +44,31 @@ drop table if exists rend_conceptrelnodes;
 drop table if exists roles_table_definition;
 """
 sql_create_functions = """
+CREATE OR REPLACE FUNCTION public.tver_array_split(
+	array1 text[])
+    RETURNS text[]
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+   	elem text;
+	elem2 text [];
+	res text[];
+BEGIN
+
+	FOREACH elem IN ARRAY array1
+	loop
+		elem2=string_to_array(elem,';');
+		res=res||elem2;
+	end loop;
+return array_unique(res);
+	
+END;
+$BODY$;
+
+ALTER FUNCTION public.tver_array_split(text[])
+    OWNER TO postgres;
 CREATE OR REPLACE FUNCTION public.array_elem_edit(
 	arr1 text[],
 	arr2 text[])

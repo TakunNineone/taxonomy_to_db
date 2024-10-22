@@ -549,7 +549,7 @@ class c_parseToDf():
         columns=['version','rinok', 'entity', 'targetnamespace', 'name', 'id','qname', 'type','r_type',
                                                  'typeddomainref', 'substitutiongroup', 'periodtype', 'abstract',
                                                  'nillable', 'creationdate', 'fromdate', 'enumdomain', 'enum2domain',
-                                                 'enumlinkrole', 'enum2linkrole','pattern','minlength','documentation']
+                                                 'enumlinkrole', 'enum2linkrole','pattern','minlength','maxlength','documentation']
         if dict_with_lbrfs:
             for xx in dict_with_lbrfs:
                 qname_rep=os.path.basename(full_file_path).replace('.xsd','')
@@ -570,6 +570,7 @@ class c_parseToDf():
                 restriction=xx.find('xsd:restriction')
                 pattern = None
                 minlength = None
+                maxlength = None
                 restr_type = None
                 doc_text = None
                 documentation = xx.find('xsd:annotation')
@@ -581,8 +582,11 @@ class c_parseToDf():
                     for aa in attrs:
                         if re.search('.*pattern$',aa.name):
                             pattern = aa['value']
-                        elif re.search('.*minlength$',aa.name):
-                            minlength = aa['value']
+                        elif re.search('.*minlength$',aa.name) or re.search('.*maxlength$',aa.name):
+                            if re.search('.*minlength$',aa.name):
+                                minlength = aa['value']
+                            if re.search('.*maxlength$',aa.name):
+                                maxlength = aa['value']
                 temp_list.append([
                     self.version,rinok,entity,
                     xx.parent['targetnamespace'] if 'targetnamespace' in xx.parent.attrs.keys() else None,
@@ -604,7 +608,7 @@ class c_parseToDf():
                     xx['enum:linkrole'] if 'enum:linkrole' in xx.attrs else None,
                     xx['enum2:linkrole'] if 'enum2:linkrole' in xx.attrs else None,
                     pattern,
-                    minlength,
+                    minlength,maxlength,
                     doc_text.text if doc_text else None
                 ])
         df_elements=pd.DataFrame(data=temp_list,columns=columns)
