@@ -6,9 +6,9 @@ import parseDicNew, parseTab, parseMetaInf, parseIFRS_FULL,parseBadFiles,skripts
 
 from sqlalchemy import create_engine,text
 from bs4 import  BeautifulSoup
-version = 'final_6_2'
+version = 'final_a_6_1_0_2'
 
-roles_table_definition_6=pd.read_csv("Сопоставление-ролей-definition-и-table.csv",header=0)
+roles_table_definition_6=pd.read_csv("Сопоставление-ролей-definition-и-table_bfo_3.csv",header=0)
 roles_table_definition_5_3=pd.read_csv('bfo_roles_definition_table_5_3.csv',header=0)
 
 
@@ -68,7 +68,7 @@ del df_list
 gc.collect()
 
 if nso!=[]:
-    # nso=[['purcb','purcb']]
+    # nso=[['operatory','oper'],['npf','nfo'],]
     for rinok in nso:
         print('parseTab', rinok)
         ss1 = parseTab.c_parseTab(version, rinok[0], rinok[1], period)
@@ -142,6 +142,7 @@ if os.path.exists(f'{os.getcwd()}\\{version}\\www.cbr.ru\\xbrl\\bfo\\dict'):
     del df_list
     gc.collect()
 
+
 ss = parseIFRS_FULL.c_parseIFRS_FULL(version)
 df_list = ss.startParse()
 df_list = {k: v for k, v in df_list.items() if v is not None}
@@ -193,8 +194,8 @@ conn.execute(text (sql_create_functions))
 conn.execute(text (sql_create_elements_labels))
 conn.execute(text (sql_create_preferred_labels))
 conn.execute(text (sql_create_dop_tables))
-# if 'final_6' in version:
-#     roles_table_definition_6.to_sql('roles_table_definition', conn, if_exists='replace', index=False)
+if 'final_6' in version:
+    roles_table_definition_6.to_sql('roles_table_definition', conn, if_exists='replace', index=False)
 # elif 'final_5_3' in version:
 #     roles_table_definition_5_3.to_sql('roles_table_definition', conn, if_exists='replace', index=False)
 

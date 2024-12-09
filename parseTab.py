@@ -106,6 +106,7 @@ class c_parseTab():
                     self.df.parseLinkbase(soup_formula,path)
                     self.df.parse_tableTags(soup_formula, path, 'formula')
                     self.df.parse_generals(soup_formula.find_all_next(re.compile('.*generalvariable$')),path)
+                    self.df.parse_fgenerals(soup_formula.find_all_next(re.compile('.*general$')), path)
                     self.df.parseRolerefs(soup_formula.find_all(re.compile('.*roleref$')),path,'formula')
                     self.df.parseLink(soup_formula.find_all(re.compile('.*link$')), path)
                     self.df.parseArcs(soup_formula.find_all_next(re.compile('.*variablearc$')),path,'formula')
@@ -123,6 +124,7 @@ class c_parseTab():
                     self.df.parse_aspectcovers(soup_formula.find_all_next(re.compile('.*aspectcover$')),path)
                     self.df.parse_assertionset(soup_formula,path)
                     self.df.parse_orFilters(soup_formula, path)
+                    self.df.parse_andFilters(soup_formula, path)
                     self.df.parse_precond(soup_formula,path)
                     self.df.parse_messages(soup_formula,path)
                     self.df.parse_periodinstantfilter(soup_formula,path)
@@ -232,9 +234,11 @@ class c_parseTab():
                 'df_va_factvars':self.df.concatDfs(self.df.df_va_factvars_Dic),
                 'df_va_assertions':self.df.concatDfs(self.df.df_va_assertions_Dic),
                 'df_va_generals': self.df.concatDfs(self.df.df_va_generals_Dic),
+                'df_va_fgenerals': self.df.concatDfs(self.df.df_va_fgenerals_Dic),
                 'df_va_aspectcovers': self.df.concatDfs(self.df.df_va_aspectcovers_Dic),
                 'df_va_assertionsets': self.df.concatDfs(self.df.df_va_assertionset_Dic),
                 'df_va_orfilters': self.df.concatDfs(self.df.df_va_orfilters_Dic),
+                'df_va_andfilters': self.df.concatDfs(self.df.df_va_andfilters_Dic),
                 'df_va_mdimensions': self.df.concatDfs(self.df.df_va_mdimensions_Dic),
                 'df_preconditions': self.df.concatDfs(self.df.df_preconditions_Dic),
                 'df_messages': self.df.concatDfs(self.df.df_messages_Dic),

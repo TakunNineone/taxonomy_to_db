@@ -44,6 +44,7 @@ class c_parseDic():
             self.path_label=f'{path_folder}{rinok}-dic-label.xml'
             self.path_definition=f'{path_folder}{rinok}-dic-definition.xml'
             self.path_pres=f'{path_folder}{rinok}-dic-presentation.xml'
+        None
 
 
     def parseDic(self):
@@ -92,7 +93,7 @@ class c_parseDic():
                 'df_tabletags':self.df.concatDfs(self.df.df_tabletags_Dic)}
 
 if __name__ == "__main__":
-    ss=c_parseDic('final_5_2','operatory','oper')
+    ss=c_parseDic('dko_txnm_v0.3.5','iss','oper')
     dfs=ss.startParse()
 
     None
