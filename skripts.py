@@ -833,7 +833,7 @@ create index arcs_arcfrom on arcs (arcfrom);
 sql_create_elements_labels = """
 create table elements_labels as 
 --insert into elements_labels
-select e.version,e.rinok,la.entity label_entity,la.label label_id,e.entity,e.name,e.id,e.qname,e.type,e.substitutiongroup,la.lang,la.label,la.role,e.abstract,la.text,full_path
+select e.version,e.rinok,la.entity label_entity,la.label label_id,e.entity,e.name,e.id,e.qname,e.type,e.substitutiongroup,la.lang,la.label,la.role,e.abstract,la.text,e.fullpath
 from 
 elements e 
 left join locators le ON le.href_id = e.id AND le.locfrom = 'label'
@@ -843,7 +843,7 @@ left join labels la ON la.rinok = ae.rinok AND la.entity = ae.entity AND la.labe
 """
 sql_create_preferred_labels = """
 create table preferred_labels as
-select a.version,a.rinok,a.entity,a.parentrole,l.href_id id,el.qname,el.role,el.abstract,el.type,el.substitutiongroup,text,full_path,label_id
+select a.version,a.rinok,a.entity,a.parentrole,l.href_id id,el.qname,el.role,el.abstract,el.type,el.substitutiongroup,text,el.fullpath,label_id
 from arcs a
 join locators l on l.label=a.arcto and l.rinok=a.rinok and l.entity=a.entity and a.parentrole=l.parentrole	
 join elements_labels el on el.id=l.href_id

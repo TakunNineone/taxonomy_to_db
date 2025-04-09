@@ -127,6 +127,7 @@ class c_parseTab():
                     self.df.parse_andFilters(soup_formula, path)
                     self.df.parse_precond(soup_formula,path)
                     self.df.parse_messages(soup_formula,path)
+                    self.df.parse_va_parameters(soup_formula, path)
                     self.df.parse_periodinstantfilter(soup_formula,path)
                     self.df.parse_mDimension(soup_formula,path)
             rend = [f"{self.path_tax}{tab_temp.replace('http://', '')}{yy['xlink:href']}" for yy in linkbaserefs if
@@ -245,7 +246,8 @@ class c_parseTab():
                 'df_tabletags': self.df.concatDfs(self.df.df_tabletags_Dic),
                 'df_linkbases': self.df.concatDfs(self.df.df_linkbases_Dic),
                 'df_va_periods': self.df.concatDfs(self.df.df_periodinstantfilter_Dic),
-                'df_va_link': self.df.concatDfs(self.df.df_va_link_Dic)
+                'df_va_link': self.df.concatDfs(self.df.df_va_link_Dic),
+                'df_va_parameters': self.df.concatDfs(self.df.df_va_parameters_Dic)
                 }
 
 if __name__ == "__main__":
