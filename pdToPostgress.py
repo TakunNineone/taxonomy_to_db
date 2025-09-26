@@ -6,14 +6,14 @@ import parseDicNew, parseTab, parseMetaInf, parseIFRS_FULL,parseBadFiles,skripts
 
 from sqlalchemy import create_engine,text
 from bs4 import  BeautifulSoup
-version = 'final_7'
+version = 'final_8_0'
 
 roles_table_definition_6=pd.read_csv("Сопоставление-ролей-definition-и-table_bfo_3.csv",header=0)
 roles_table_definition_5_3=pd.read_csv('bfo_roles_definition_table_5_3.csv',header=0)
 
 
 print('begin', datetime.datetime.now())
-conn_string = f'postgresql+psycopg2://postgres:124kosm21@127.0.0.1/{version}'
+conn_string = f'postgresql+psycopg2://postgres:124kosm21@127.0.0.1/django_db'
 db = create_engine(conn_string,isolation_level="AUTOCOMMIT")
 conn = db.connect()
 print(conn)
@@ -29,8 +29,6 @@ except:
     nso=[]
 nso=[[xx,xx if xx!='operatory' else 'oper']  for xx in nso]
 
-
-sql_delete = skripts.sql_delete
 sql_create_functions = skripts.sql_create_functions
 sql_indexes = skripts.sql_indexes
 sql_indexes_new= skripts.sql_indexes_new
@@ -38,8 +36,27 @@ sql_create_elements_labels = skripts.sql_create_elements_labels
 sql_create_preferred_labels = skripts.sql_create_preferred_labels
 sql_create_dop_tables = skripts.sql_create_dop_tables
 
-conn.execute(text(sql_delete))
+
+conn.execute(
+    text("""
+        SELECT pg_terminate_backend(pg_stat_activity.pid)
+        FROM pg_stat_activity
+        WHERE pg_stat_activity.datname = :db_name;
+    """),
+    {"db_name": version}
+)
+
+conn.execute(text(f'DROP DATABASE IF EXISTS {version}'))
+
 conn.commit()
+
+conn.execute(text(f"CREATE DATABASE {version}"))
+
+conn.close()
+
+conn_string = f'postgresql+psycopg2://postgres:124kosm21@127.0.0.1/{version}'
+db = create_engine(conn_string,isolation_level="AUTOCOMMIT")
+conn = db.connect()
 
 print('parseXsdBadFiles', version)
 ss=parseBadFiles.c_parseBadFiles(version)

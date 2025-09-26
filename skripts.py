@@ -1,47 +1,9 @@
 import pandas as pd
 
 sql_delete = """
-drop table if exists xsdfiles;
-drop table if exists tabletags;
-drop table if exists arcs;
-drop table if exists aspectnodes;
-drop table if exists catalog;
-drop table if exists elements;
-drop table if exists elements_labels;
-drop table if exists entrypoints;
-drop table if exists labels;
-drop table if exists linkbaserefs;
-drop table if exists linkbases;
-drop table if exists locators;
-drop table if exists messages;
-drop table if exists preconditions;
-drop table if exists preferred_labels;
-drop table if exists rend_edimensions;
-drop table if exists rend_edmembers;
-drop table if exists rolerefs;
-drop table if exists roletypes;
-drop table if exists rulenodes;
-drop table if exists rulenodes_c;
-drop table if exists rulenodes_e;
-drop table if exists rulenodes_p;
-drop table if exists rulesets;
-drop table if exists tableparts;
-drop table if exists tables;
-drop table if exists tableschemas;
-drop table if exists taxpackage;
-drop table if exists va_orfilters;
-drop table if exists va_aspectcovers;
-drop table if exists va_assertions;
-drop table if exists va_assertionsets;
-drop table if exists va_concepts;
-drop table if exists va_edimensions;
-drop table if exists va_edmembers;
-drop table if exists va_factvars;
-drop table if exists va_generals;
-drop table if exists va_tdimensions;
-drop table if exists va_periods;
-drop table if exists rend_conceptrelnodes;
-drop table if exists roles_table_definition;
+SELECT pg_terminate_backend(pg_stat_activity.pid)
+FROM pg_stat_activity
+WHERE pg_stat_activity.datname = f'{version}';
 """
 sql_create_functions = """
 CREATE OR REPLACE FUNCTION public.tver_array_split(

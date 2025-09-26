@@ -109,10 +109,10 @@ class c_parseTab():
                     self.df.parse_fgenerals(soup_formula.find_all_next(re.compile('.*general$')), path)
                     self.df.parseRolerefs(soup_formula.find_all(re.compile('.*roleref$')),path,'formula')
                     self.df.parseLink(soup_formula.find_all(re.compile('.*link$')), path)
-                    self.df.parseArcs(soup_formula.find_all_next(re.compile('.*variablearc$')),path,'formula')
-                    self.df.parseArcs(soup_formula.find_all_next(re.compile('.*variablefilterarc$')), path, 'formula')
-                    self.df.parseArcs(soup_formula.find_all_next(re.compile('.*variablesetfilterarc$')), path, 'formula')
-                    self.df.parseArcs(soup_formula.find_all_next(re.compile(r'^.{0,4}arc$')), path, 'formula')
+                    self.df.parseArcs(soup_formula.find_all_next(re.compile('.*variablearc$')),path,'formula','tab')
+                    self.df.parseArcs(soup_formula.find_all_next(re.compile('.*variablefilterarc$')), path, 'formula','tab')
+                    self.df.parseArcs(soup_formula.find_all_next(re.compile('.*variablesetfilterarc$')), path, 'formula','tab')
+                    self.df.parseArcs(soup_formula.find_all_next(re.compile(r'^.{0,4}arc$')), path, 'formula','tab')
                     self.df.parseLocators(soup_formula.find_all_next(re.compile(r'^.{0,5}loc$')),path,'formula')
                     self.df.parseLabels(soup_formula.find_all_next(re.compile('.*message$')),path)
                     self.df.parse_assertions(soup_formula.find_all_next(re.compile('.*valueassertion$')),path,'valueassertion'),
@@ -165,8 +165,8 @@ class c_parseTab():
         self.df.parseLinkbase(soup_def, path)
         self.df.parse_tableTags(soup_def, path, 'definition_table')
         self.df.parseRolerefs(soup_def.find_all(re.compile('.*roleref$')),path,'definition')
-        self.df.parseLocators(soup_def.find_all(re.compile('.*loc$')),path,'definition')
-        self.df.parseArcs(soup_def.find_all(re.compile('.*definitionarc$')),path,'definition')
+        self.df.parseLocators(soup_def.find_all(re.compile('.*loc$')),path,'definition','tab')
+        self.df.parseArcs(soup_def.find_all(re.compile('.*definitionarc$')),path,'definition','tab')
         # t_all=[t1,t2,t3]
         # for t in t_all:
         #     self.df.writeThread(t)
@@ -176,17 +176,17 @@ class c_parseTab():
         self.df.parseLinkbase(soup_pres, path)
         self.df.parse_tableTags(soup_pres, path, 'presentation_table')
         self.df.parseRolerefs(soup_pres.find_all(re.compile('.*roleref$')),path,'presentation')
-        self.df.parseLocators(soup_pres.find_all(re.compile('.*loc$')),path,'presentation')
-        self.df.parseArcs(soup_pres.find_all(re.compile('.*presentationarc$')),path,'presentation')
+        self.df.parseLocators(soup_pres.find_all(re.compile('.*loc$')),path,'presentation','tab')
+        self.df.parseArcs(soup_pres.find_all(re.compile('.*presentationarc$')),path,'presentation','tab')
 
     def parselab(self,path):
         soup = self.df.parsetag(path, 'linkbase')
         self.df.parseLinkbase(soup, path)
         self.df.parse_tableTags(soup, path, 'lab')
         self.df.parseRolerefs(soup.find_all(re.compile('.*roleref$')),path,'lab')
-        self.df.parseLocators(soup.find_all(re.compile('.*loc$')),path,'lab')
+        self.df.parseLocators(soup.find_all(re.compile('.*loc$')),path,'lab','tab')
         self.df.parseLabels(soup.find_all(re.compile('.*label$')),path)
-        self.df.parseArcs(soup.find_all(re.compile('.*arc$')),path,'gen:arc')
+        self.df.parseArcs(soup.find_all(re.compile('.*arc$')),path,'gen:arc','tab')
 
 
     def parserend(self,path):
@@ -196,10 +196,10 @@ class c_parseTab():
         self.df.parseRolerefs(soup.find_all(re.compile('.*roleref$')),path,'rend')
         self.df.parseTableschemas(soup.find_all(re.compile('.*table$')),path,'table')
         self.df.parseTableschemas(soup.find_all(re.compile('.*breakdown$')),path,'breakdown')
-        self.df.parseArcs(soup.find_all(re.compile('.*tablebreakdownarc$')),path,'table:tablebreakdownarc')
-        self.df.parseArcs(soup.find_all_next(re.compile('.*definitionnodesubtreearc$')),path,'table:definitionnodesubtreearc')
-        self.df.parseArcs(soup.find_all_next(re.compile('.*aspectnodefilterarc$')), path,'table:aspectnodefilterarc')
-        self.df.parseArcs(soup.find_all_next(re.compile('.*breakdowntreearc$')), path, 'table:breakdowntreearc')
+        self.df.parseArcs(soup.find_all(re.compile('.*tablebreakdownarc$')),path,'table:tablebreakdownarc','tab')
+        self.df.parseArcs(soup.find_all_next(re.compile('.*definitionnodesubtreearc$')),path,'table:definitionnodesubtreearc','tab')
+        self.df.parseArcs(soup.find_all_next(re.compile('.*aspectnodefilterarc$')), path,'table:aspectnodefilterarc','tab')
+        self.df.parseArcs(soup.find_all_next(re.compile('.*breakdowntreearc$')), path, 'table:breakdowntreearc','tab')
         self.df.parse_edimensions_rend(soup,path)
         self.df.parseConceptRelationshipNode(soup,path)
 
@@ -251,7 +251,7 @@ class c_parseTab():
                 }
 
 if __name__ == "__main__":
-    ss=c_parseTab('final_6_1_nso','npf','npf','2024-12-30')
+    ss=c_parseTab('final_6_1_0_15','purcb','purcb','2025-06-10')
     print(datetime.datetime.now())
     tables=ss.startParse()
     print('\n',datetime.datetime.now())

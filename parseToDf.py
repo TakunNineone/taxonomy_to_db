@@ -336,13 +336,15 @@ class c_parseToDf():
         columns=['version','rinok', 'entity', 'parentrole', 'type', 'label', 'title', 'id', 'value','fullpath']
         soup=soup.find_all_next(re.compile('.*conceptname$'))
         for xx in soup:
+            if os.path.basename(path)=='sr_R1-formula.xml':
+                None
             temp_list.append([self.version,self.rinok, os.path.basename(path),
                                         xx.parent['xlink:role'] if 'xlink:role' in xx.parent.attrs.keys() else None,
                                         xx['xlink:type'] if 'xlink:type' in xx.attrs.keys() else None,
                                         xx['xlink:label'] if 'xlink:label' in xx.attrs.keys() else None,
                                         xx['xlink:title'] if 'xlink:title' in xx.attrs.keys() else None,
                                         xx['id'] if 'id' in xx.attrs.keys() else None,
-                                        xx.text.strip(),
+                                        xx.text.strip().replace('\n\n\n',';'),
                               path
                                         ])
         df_va_concepts=pd.DataFrame(data=temp_list,columns=columns)
@@ -352,7 +354,7 @@ class c_parseToDf():
     def parse_tdimensions(self,soup,path):
         # print(f'parse_tdimensions - {path}')
         temp_list=[]
-        columns=['version','rinok', 'entity', 'parentrole', 'type', 'label', 'title', 'id', 'value','fullpath']
+        columns=['version','rinok', 'entity', 'parentrole', 'type', 'label', 'title', 'id', 'value','test','fullpath']
         soup=soup.find_all_next(re.compile('.*typeddimension$'))
         for xx in soup:
             temp_list.append([self.version,self.rinok, os.path.basename(path),
@@ -361,8 +363,9 @@ class c_parseToDf():
                                         xx['xlink:label'] if 'xlink:label' in xx.attrs.keys() else None,
                                         xx['xlink:title'] if 'xlink:title' in xx.attrs.keys() else None,
                                         xx['id'] if 'id' in xx.attrs.keys() else None,
-                                        xx.text.strip(),
-                              path
+                                        xx.text.strip().replace('\n\n\n',';'),
+                                        xx['test'] if 'test' in xx.attrs.keys() else None,
+                                        path
                                         ])
         df_va_tdimensions = pd.DataFrame(data=temp_list,columns=columns)
         self.df_va_tdimensions_Dic.append(df_va_tdimensions)
@@ -772,14 +775,14 @@ class c_parseToDf():
         self.appendDfs_Dic(self.df_labels_Dic, df_labels)
         #del df_labels,temp_list
 
-    def parseLocators(self,dict_with_loc,full_file_path,tag):
+    def parseLocators(self,dict_with_loc,full_file_path,tag,dop_tag='None'):
         temp_list=[]
-        columns=['version','rinok', 'entity', 'locfrom', 'parentrole', 'type', 'href','href_id', 'label', 'title','fullpath']
+        columns=['version','rinok', 'entity', 'locfrom','locfrom2', 'parentrole', 'type', 'href','href_id', 'label', 'title','fullpath']
         #print(f'Locators - {full_file_path}')
         if dict_with_loc:
             for xx in dict_with_loc:
                 temp_list.append([
-                    self.version,self.rinok, os.path.basename(full_file_path), tag,
+                    self.version,self.rinok, os.path.basename(full_file_path), tag,dop_tag,
                     xx.parent['xlink:role'] if 'xlink:role' in xx.parent.attrs.keys() else None,
                     xx['xlink:type'] if 'xlink:type' in xx.attrs.keys() else None,
                     xx['xlink:href'] if 'xlink:href' in xx.attrs.keys() else None,
@@ -839,10 +842,10 @@ class c_parseToDf():
         self.appendDfs_Dic(self.df_tableschemas_Dic, df_tableschemas)
        # del df_tableschemas,temp_list
 
-    def parseArcs(self,dict_with_arcs,full_file_path,tag):
+    def parseArcs(self,dict_with_arcs,full_file_path,tag,dop_tag='None'):
         # print(f'Arcs - {full_file_path}')
         temp_list=[]
-        columns=['version','rinok', 'entity', 'arctype', 'parentrole', 'type', 'arcrole',
+        columns=['version','rinok', 'entity', 'arctype','arctype2', 'parentrole', 'type', 'arcrole',
                                              'arcfrom', 'arcto', 'title', 'usable', 'closed', 'contextelement',
                                              'targetrole', 'order', 'preferredlabel', 'use', 'priority','complement','cover','name','axis','fullpath'
                                              ]
@@ -850,7 +853,7 @@ class c_parseToDf():
             for arc in dict_with_arcs:
                 temp_list.append([
                     self.version,self.rinok, os.path.basename(full_file_path),
-                    tag,
+                    tag,dop_tag,
                     arc.parent['xlink:role'] if 'xlink:role' in arc.parent.attrs.keys() else None,
                     arc['xlink:type'] if 'xlink:type' in arc.attrs.keys() else None,
                     arc['xlink:arcrole'] if 'xlink:arcrole' in arc.attrs.keys() else None,
