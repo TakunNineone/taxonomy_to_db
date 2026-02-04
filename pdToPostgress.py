@@ -6,7 +6,7 @@ import parseDicNew, parseTab, parseMetaInf, parseIFRS_FULL,parseBadFiles,skripts
 
 from sqlalchemy import create_engine,text
 from bs4 import  BeautifulSoup
-version = 'final_8_0'
+version = 'final_7_1_0_3'
 
 roles_table_definition_6=pd.read_csv("Сопоставление-ролей-definition-и-table_bfo_3.csv",header=0)
 roles_table_definition_5_3=pd.read_csv('bfo_roles_definition_table_5_3.csv',header=0)
@@ -27,7 +27,9 @@ try:
     nso=os.listdir(f'{os.getcwd()}\\{version}\\www.cbr.ru\\xbrl\\nso')
 except:
     nso=[]
-nso=[[xx,xx if xx!='operatory' else 'oper']  for xx in nso]
+
+replace_dic={'operatory':'oper'}
+nso=[[xx,xx if replace_dic.get(xx) == None else replace_dic.get(xx)] for xx in nso]
 
 sql_create_functions = skripts.sql_create_functions
 sql_indexes = skripts.sql_indexes

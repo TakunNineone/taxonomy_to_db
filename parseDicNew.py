@@ -35,6 +35,16 @@ class c_parseDic():
             self.rinok = 'eps'
             self.rinok_folder = rinok_folder
             self.df = parseToDf.c_parseToDf(taxonomy,self.rinok)
+        # elif rinok_folder in ('em'):
+        #     path_folder = f'{os.getcwd()}\{taxonomy}\\www.cbr.ru\\xbrl\\{rinok_folder}\\'
+        #     self.path_dic = f'{path_folder}{rinok}.xsd'
+        #     self.path_label = f'{path_folder}{rinok}-label.xml'
+        #     self.path_definition = f'{path_folder}{rinok}-definition.xml'
+        #     self.path_pres = f'{path_folder}{rinok}-presentation.xml'
+        #     self.rinok = 'eps'
+        #     self.rinok_folder = rinok_folder
+        #     self.df = parseToDf.c_parseToDf(taxonomy, self.rinok)
+
         else:
             self.rinok_folder=rinok_folder
             self.rinok=rinok
