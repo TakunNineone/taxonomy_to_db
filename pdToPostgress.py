@@ -6,7 +6,7 @@ import parseDicNew, parseTab, parseMetaInf, parseIFRS_FULL,parseBadFiles,skripts
 
 from sqlalchemy import create_engine,text
 from bs4 import  BeautifulSoup
-version = 'final_8_0_11032026_1721'
+version = 'final_7_1_0_1'
 
 roles_table_definition_6=pd.read_csv("Сопоставление-ролей-definition-и-table_bfo_3.csv",header=0)
 roles_table_definition_5_3=pd.read_csv('bfo_roles_definition_table_5_3.csv',header=0)
