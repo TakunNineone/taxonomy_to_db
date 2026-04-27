@@ -645,7 +645,7 @@ kra;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_nfo_8;http://www.cbr.ru
 kra;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_nfo_8_2;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_nfo_8_2
 kra;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_nfo_8_hc1;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_nfo_8
 kra;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_soprovod;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_soprovod
-nfo;http://www.cbr.ru/xbr/nso/nfo/rep/2026-11-30/tab/sr_ks;http://www.cbr.ru/xbr/nso/nfo/rep/2026-11-30/tab/sr_ks
+nfo;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_ks;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_ks
 nfo;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_0420011_ODS_nfo_r1_p1_p1_oboroty;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_0420011_ODS_nfo_r1_p1_p1_oboroty
 nfo;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_0420011_ODS_nfo_r1_p1_p1_oboroty_total;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_0420011_ODS_nfo_r1_p1_p1_oboroty
 nfo;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_0420011_ODS_nfo_r1_p1_p1_ostatki;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_0420011_ODS_nfo_r1_p1_p1_ostatki
@@ -827,7 +827,7 @@ nfo;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_nfo_8;http://www.cbr.ru
 nfo;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_nfo_8_2;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_nfo_8_2
 nfo;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_nfo_8_hc1;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_nfo_8
 nfo;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_soprovod;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_soprovod
-npf;http://www.cbr.ru/xbr/nso/nfo/rep/2026-11-30/tab/sr_ks;http://www.cbr.ru/xbr/nso/nfo/rep/2026-11-30/tab/sr_ks
+npf;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_ks;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_ks
 npf;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_nfo_1/sr_nfo_1_r1;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_nfo_1/sr_nfo_1_r1
 npf;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_nfo_1/sr_nfo_1_r1_2;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_nfo_1/sr_nfo_1_r1
 npf;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_nfo_1/sr_nfo_1_r2;http://www.cbr.ru/xbrl/nso/nfo/rep/2026-11-30/tab/sr_nfo_1/sr_nfo_1_r2
@@ -859,6 +859,7 @@ npf;http://www.cbr.ru/xbrl/nso/npf/rep/2026-11-30/tab/sr_0420250_r2_2;http://www
 npf;http://www.cbr.ru/xbrl/nso/npf/rep/2026-11-30/tab/sr_0420250_r4;http://www.cbr.ru/xbrl/nso/npf/rep/2026-11-30/tab/sr_0420250_r4
 npf;http://www.cbr.ru/xbrl/nso/npf/rep/2026-11-30/tab/sr_0420250_r5;http://www.cbr.ru/xbrl/nso/npf/rep/2026-11-30/tab/sr_0420250_r5
 npf;http://www.cbr.ru/xbrl/nso/npf/rep/2026-11-30/tab/sr_0420250_r6_p1;http://www.cbr.ru/xbrl/nso/npf/rep/2026-11-30/tab/sr_0420250_r6_p1
+npf;http://www.cbr.ru/xbrl/nso/npf/rep/2026-11-30/tab/sr_0420250_r7;http://www.cbr.ru/xbrl/nso/npf/rep/2026-11-30/tab/sr_0420250_r7
 npf;http://www.cbr.ru/xbrl/nso/npf/rep/2026-11-30/tab/sr_0420252_r1_p1;http://www.cbr.ru/xbrl/nso/npf/rep/2026-11-30/tab/sr_0420252_r1_p1
 npf;http://www.cbr.ru/xbrl/nso/npf/rep/2026-11-30/tab/sr_0420252_r1_p1_2;http://www.cbr.ru/xbrl/nso/npf/rep/2026-11-30/tab/sr_0420252_r1_p1
 npf;http://www.cbr.ru/xbrl/nso/npf/rep/2026-11-30/tab/sr_0420252_r1_p2_DoxKonsIInfUsl;http://www.cbr.ru/xbrl/nso/npf/rep/2026-11-30/tab/sr_0420252_r1_p2_DoxKonsIInfUsl

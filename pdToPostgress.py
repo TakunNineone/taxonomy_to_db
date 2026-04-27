@@ -6,7 +6,7 @@ import parseDicNew, parseTab, parseMetaInf, parseIFRS_FULL,parseBadFiles,skripts
 
 from sqlalchemy import create_engine,text
 from bs4 import  BeautifulSoup
-version = 'final_7_1_0_1'
+version = 'final_7_1'
 
 roles_table_definition_6=pd.read_csv("Сопоставление-ролей-definition-и-table_bfo_3.csv",header=0)
 roles_table_definition_5_3=pd.read_csv('bfo_roles_definition_table_5_3.csv',header=0)
@@ -75,7 +75,7 @@ gc.collect()
 
 print('parseMetaInf', version)
 ss = parseMetaInf.c_parseMeta(version)
-df_list = ss.parseentry() | ss.parsecatalog() | ss.parsetaxpackage()
+df_list = ss.parseentry() | ss.parsecatalog() | ss.parsetaxpackage() | ss.parseDescr()
 str_headers = ''
 for xx in df_list.keys():
     headers = [xx.strip() + ' VARCHAR, ' for xx in df_list.get(xx).keys().values]

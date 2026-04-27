@@ -5,6 +5,7 @@ class c_parseMeta():
     def __init__(self,taxonomy):
         self.version=taxonomy
         self.path=f'{taxonomy}/META-INF/'
+        self.path_tax = f'{os.getcwd()}\\{taxonomy}\\'
 
     def parsetag(self,filepath,main_tree):
         with open(filepath,'rb') as f:
@@ -13,6 +14,13 @@ class c_parseMeta():
         soup_root=soup.contents[1]
         soup_tree=soup_root.find_next(main_tree)
         return soup_tree
+
+    def parseDescr(self):
+        soup = self.parsetag(f'{self.path_tax}/description.xml', 'taxonomydescription')
+        columns=['version','tax_version','datebegin','dateend','comments']
+        temp_list=[[self.version,soup.find('version').text,soup.find('datebegin').text,soup.find('dateend').text,soup.find('comments').text]]
+        df_descr=pd.DataFrame(data=temp_list,columns=columns)
+        return {'df_descr':df_descr}
 
     def parseentry(self):
         temp_list=[]
@@ -43,6 +51,7 @@ class c_parseMeta():
             )
         df_entrypoints = pd.DataFrame(data=temp_list,columns=columns)
         return {'df_entrypoints':df_entrypoints}
+
     def parsetaxpackage(self):
         temp_list = []
         columns= ['version','tax_identifier','tax_name','tax_version','ep_name','ep_descr','ep_href','xsd','is_exist']
@@ -87,6 +96,7 @@ class c_parseMeta():
         return {'df_catalog':df_catalog}
 
 if __name__ == "__main__":
-    ss=c_parseMeta('final_5_2')
-    zz=ss.parsecatalog()
+    ss=c_parseMeta('final_7_1')
+    zz=ss.parseDescr()
+    # zz=ss.parsecatalog()
     None

@@ -51,7 +51,6 @@ class c_parseToDf():
         self.df_tables_Dic = []
         self.df_va_parameters_Dic =[]
 
-
     def parseLinkbase(self,soup,path):
         temp_list=[]
         columns = ['version', 'rinok', 'entity', 'prefix','link','fullpath']
